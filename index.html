@@ -879,6 +879,113 @@ button { font-family: inherit; }
 .cs-savings h5{font-family:var(--f-mono);font-size: 17px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink);margin:0 0 14px;font-weight:500}
 @media (max-width:900px){.cs-cols3,.cs-cols2,.cs-tradeoff .grid{grid-template-columns:1fr}.cs-quote p{font-size:19px}.cs-frame .stmt{font-size:20px}}
 
+/* ---------- Technical Verification case study visuals ---------- */
+.tv-ba{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;align-items:start}
+@media(max-width:1200px){.tv-ba{grid-template-columns:1fr}.cs-cols3{grid-template-columns:1fr 1fr}.cs-cols2{grid-template-columns:1fr}}
+@media(max-width:760px){.cs-cols3{grid-template-columns:1fr}}
+.tv-panel{border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.tv-panel .cap{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line-soft);font-family:var(--f-mono);font-size:15px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3)}
+.tv-pill-b{font-family:var(--f-mono);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);border-radius:999px;padding:2px 9px}
+.tv-pill-a{font-family:var(--f-mono);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ok);border:1px solid var(--ok);border-radius:999px;padding:2px 9px}
+.tv-scroll{height:620px;overflow:auto;background:oklch(0.99 0 0)}
+.tv-scroll img{width:100%;display:block}
+.tv-panel-pad{padding:26px 20px;display:flex;justify-content:center;align-items:flex-start;flex:1;background:linear-gradient(to bottom,var(--bg),var(--bg-2))}
+.tv-scroll-phone{height:620px;overflow:auto;background:linear-gradient(to bottom,var(--bg),var(--bg-2));display:flex;justify-content:center;padding:22px}
+.tv-scroll-phone img{width:280px;height:auto;border-radius:26px;box-shadow:var(--shadow-lg);align-self:flex-start;border:1px solid var(--line-soft)}
+.tv-shot-phone{width:280px;height:auto;border-radius:26px;box-shadow:var(--shadow-lg);border:1px solid var(--line-soft);display:block;flex-shrink:0}
+
+/* phone */
+.tv-phones{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.tv-phone{width:296px;background:#0e1f33;border-radius:40px;padding:9px;box-shadow:var(--shadow-lg);flex-shrink:0}
+.tv-scr{background:#eef1f4;border-radius:32px;overflow:hidden;height:604px;display:flex;flex-direction:column;position:relative}
+.tv-hd{background:#14293f;color:#fff;padding:15px 16px 0}
+.tv-hd .top{display:flex;align-items:center;gap:12px}
+.tv-hd .top .bk{font-size:20px;opacity:.9}
+.tv-hd .top .who{flex:1}
+.tv-hd .top .who .nm{font-weight:600;font-size:16px;line-height:1.15}
+.tv-hd .top .who .id{font-size:12px;color:#9fb0c4;font-family:var(--f-mono);letter-spacing:.06em;margin-top:2px}
+.tv-hd .top .ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#dfe6ee}
+.tv-hd .av{width:30px;height:30px;border-radius:50%;background:#fff;color:#14293f;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.tv-tabs{display:flex;gap:22px;margin-top:16px;font-size:13.5px}
+.tv-tabs .tb{padding:10px 0;color:#9fb0c4}
+.tv-tabs .tb.on{color:#fff;border-bottom:3px solid #f26430;font-weight:600}
+.tv-body{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:11px;background:#eef1f4}
+.tv-card{background:#fff;border-radius:12px;padding:15px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(16,30,50,.07)}
+.tv-card .lbl{flex:1;font-weight:600;font-size:14.5px;color:#1e2b3a;line-height:1.25}
+.tv-card .chev{color:#9aa7b5;font-size:20px}
+.tv-fab{position:absolute;right:16px;bottom:78px;width:52px;height:52px;border-radius:50%;background:#14293f;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);font-size:20px}
+.tv-foot{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border-top:1px solid #e2e7ec}
+.tv-foot .prev{flex:1;text-align:center;color:#14293f;font-weight:600;font-size:14px}
+.tv-foot .sub{flex:1;text-align:center;background:#f7c3ad;color:#fff;font-weight:600;font-size:14px;padding:12px;border-radius:10px}
+.tv-field{background:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 1px 3px rgba(16,30,50,.05)}
+.tv-field .fl{font-size:11px;font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#8492a4;margin-bottom:6px}
+.tv-field .fv{font-size:14.5px;color:#1e2b3a;font-weight:500;line-height:1.35}
+.tv-field.geo{border:1.5px solid #f26430;background:#fff7f3}
+.tv-geo-badge{margin-top:9px;display:inline-flex;align-items:center;gap:6px;background:#f26430;color:#fff;font-size:10.5px;font-family:var(--f-mono);letter-spacing:.07em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.tv-seg{display:flex;border:1px solid #d7dee6;border-radius:8px;overflow:hidden;margin-top:2px}
+.tv-seg span{flex:1;text-align:center;padding:9px;font-size:13px;color:#5a6b7d}
+.tv-seg span.on{background:#14293f;color:#fff;font-weight:600}
+.tv-primary{margin-top:2px;background:#f26430;color:#fff;text-align:center;font-weight:600;padding:13px;border-radius:10px;font-size:14.5px}
+
+/* browser frame for BTM approver */
+.tv-browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow-md);margin-top:28px}
+.tv-browser .bar{display:flex;gap:7px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line-soft);background:var(--bg)}
+.tv-browser .bar .d{width:11px;height:11px;border-radius:50%}
+.tv-browser .bar .addr{margin-left:14px;font-family:var(--f-mono);font-size:13px;color:var(--ink-3);background:var(--paper);border:1px solid var(--line-soft);border-radius:6px;padding:5px 14px}
+.tv-browser .win{height:560px;overflow:auto}
+.tv-browser .win img{width:100%;display:block}
+
+/* auto-signed report visual */
+.tv-sign{display:flex;align-items:center;gap:36px;flex-wrap:wrap;margin-top:24px;padding:28px 32px;background:var(--paper);border:1px solid var(--line-soft);border-radius:14px}
+.tv-sign .sigwrap{flex:1;min-width:220px}
+.tv-sign .sig{font-family:var(--f-serif);font-style:italic;font-size:34px;color:var(--ink);line-height:1;border-bottom:1px solid var(--line);padding-bottom:10px;display:inline-block}
+.tv-sign .sigcap{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:10px}
+.tv-stamp{width:104px;height:104px;border-radius:50%;border:3px double #2f6fb0;color:#2f6fb0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;transform:rotate(-11deg);opacity:.92;flex-shrink:0;line-height:1.5}
+
+/* one-button start */
+.tv-startbtn{display:inline-flex;align-items:center;gap:14px;background:var(--ink);color:var(--paper);padding:18px 30px;border-radius:14px;font-family:var(--f-sans);font-weight:600;font-size:19px;box-shadow:var(--shadow-md)}
+.tv-startbtn .plus{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px}
+
+/* vendor routing */
+.tv-vlist{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.tv-vrow{display:flex;align-items:center;gap:16px;padding:14px 18px;border:1px solid var(--line-soft);border-radius:12px;background:var(--paper)}
+.tv-vrow.top{border-color:var(--accent);background:var(--accent-soft)}
+.tv-vrow .rank{font-family:var(--f-mono);color:var(--ink-3);width:22px;font-size:15px}
+.tv-vrow .vn{flex:1;font-weight:600;color:var(--ink);font-size:16px}
+.tv-vrow .vn small{display:block;font-weight:400;color:var(--ink-3);font-size:13px;margin-top:2px}
+.tv-vrow .vm{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);text-align:right;line-height:1.5}
+.tv-vrow.top .vm{color:var(--ink)}
+.tv-pick{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+
+/* before/after table */
+.tv-table{width:100%;border-collapse:collapse;margin-top:12px}
+.tv-table th,.tv-table td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line-soft);font-size:15px;vertical-align:top;line-height:1.5}
+.tv-table th{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tv-table td.dim{color:var(--ink-3)}
+.tv-table td.hi{color:var(--ink);font-weight:500}
+.tv-table td:first-child{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+/* focus chip on emphasized moves */
+.tv-focus{border-color:var(--accent)}
+.tv-chip{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:3px 11px;margin-bottom:12px}
+.tv-note{margin-top:20px;font-family:var(--f-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-3);padding:14px 18px;border:1px dashed var(--line);border-radius:10px;background:var(--bg)}
+.tv-note strong{color:var(--ink-2);font-weight:600}
+
+/* ---------- Password gate ---------- */
+.gate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 20%, oklch(0.97 0.01 235), var(--bg));font-family:var(--f-sans);padding:20px}
+.gate-card{width:min(420px,92vw);background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:44px 40px}
+.gate-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center;margin-bottom:22px}
+.gate .bdot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px oklch(0.58 0.13 235 / .18)}
+.gate h1{font-family:var(--f-serif);font-weight:800;font-size:34px;letter-spacing:-.02em;margin:0 0 8px;color:var(--ink)}
+.gate h1 em{font-style:italic;color:var(--accent)}
+.gate p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 26px}
+.gate form{display:flex;flex-direction:column;gap:12px}
+.gate input{font-family:var(--f-sans);font-size:16px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s ease}
+.gate input:focus{border-color:var(--accent)}
+.gate .err{font-family:var(--f-mono);font-size:13px;color:var(--warn);letter-spacing:.03em;min-height:16px}
+.gate button{font-family:var(--f-mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:14px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:12px;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.gate button:hover{background:var(--accent);border-color:var(--accent)}
+
 /* ---------- Chrome overlays ---------- */
 .topbar {
   position: fixed;
@@ -1256,7 +1363,7 @@ html[data-theme="mono"] {
 const PROJECTS = [
   {
     id: 'legal',
-    code: '01',
+    code: '04',
     name: 'Veritas',
     title: 'Legal verification, re-imagined',
     client: 'Legal Verification Portal',
@@ -1309,32 +1416,22 @@ const PROJECTS = [
   {
     id: 'tech',
     code: '03',
-    name: 'Fieldline',
-    title: 'Technical verification on the ground',
-    client: 'Technical Verification for Verifiers',
-    audience: 'For field verifiers inspecting collateral',
+    name: 'Parakh · Tech',
+    extended: true,
+    title: 'Technical verification, field-first',
+    client: 'Piramal Capital',
+    audience: 'For field verifiers, vendor managers & BTMs',
     year: '2025',
-    role: 'Lead Designer',
-    duration: '11 weeks',
-    team: '1 PM · 3 Eng · 1 Designer · 1 Ops Lead',
-    tags: ['Mobile-first', 'Field Ops', 'Fintech'],
-    thumbLabel: 'FIELDLINE · FIELD CHECK',
-    summary: 'A mobile-first tool that guides verifiers through a collateral inspection with structured capture, offline-first sync, and fraud signals baked in.',
-    lede: 'Verifiers were asked to be inspectors, photographers, auditors and fraud detectors — with a form that hadn\'t changed since 2011.',
-    problem: 'The legacy app was a long scrollable form. Verifiers in the field — often in low-connectivity areas — would lose data, skip steps, and produce inconsistent photos that the risk team couldn\'t trust.',
-    research: 'Ride-alongs in 3 cities. We discovered that "a good verification" was really a narrative the verifier constructed on-site: location → structure → fixtures → occupancy → anomalies. The old form fought that narrative.',
-    design: 'A chaptered capture flow with a persistent map anchor, guided photo frames with live-glare detection, and an anomaly chip that lets verifiers flag intuition without breaking the flow. Everything queues offline and syncs opportunistically.',
-    outcomes: [
-      { big: '+96%', lab: 'Submissions complete on first try' },
-      { big: '−64%', lab: 'Re-verification requests' },
-      { big: '2.1×', lab: 'Fraud flags caught early' },
-    ],
-    quote: '"I finish reports before I\'m back at the bike."',
-    quoteWho: 'Verifier, Nashik',
+    role: 'Design lead — end-to-end',
+    duration: 'Multi-quarter',
+    team: '[add your 5-person split]',
+    tags: ['Field ops', 'Mobile capture', 'Fintech'],
+    thumbLabel: 'PARAKH \u00b7 TECHNICAL VERIFICATION',
+    summary: 'Turning a 60–70 field Excel relay into a field-first mobile capture flow that auto-generates a signed, scored report straight into underwriting.',
   },
   {
     id: 'parakh',
-    code: '04',
+    code: '01',
     name: 'Parakh',
     extended: true,
     title: 'Piramal Parakh, legal verification redesign',
@@ -1404,10 +1501,10 @@ const ISLANDS = [
 
   // ── Work cluster — single-row filmstrip, all 5 projects fit in one snap ─
   { id: 'sec-work',   kind: 'section',   x: 1700, y: 3300, num: '02 — Work',  h1: 'A few things', em: 'I made' },
-  { id: 'proj-1',     kind: 'project',   x: 1700, y: 3540, project: PROJECTS[0], compact: true },
+  { id: 'proj-1',     kind: 'project',   x: 1700, y: 3540, project: PROJECTS[3], compact: true },
   { id: 'proj-2',     kind: 'project',   x: 2028, y: 3540, project: PROJECTS[1], compact: true },
   { id: 'proj-3',     kind: 'project',   x: 2356, y: 3540, project: PROJECTS[2], compact: true },
-  { id: 'proj-4',     kind: 'project',   x: 2684, y: 3540, project: PROJECTS[3], compact: true },
+  { id: 'proj-4',     kind: 'project',   x: 2684, y: 3540, project: PROJECTS[0], compact: true },
   { id: 'proj-5',     kind: 'project',   x: 3012, y: 3540, project: PROJECTS[4], compact: true },
 
   // ── Experience cluster — left side (snap ~y:6060) ────────────────────────
@@ -2065,7 +2162,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
         <div className="cs-section" ref={refs.current[12]}>
           <div className="cs-num">13 · Impact</div>
           <h2><em>Impact</em></h2>
-          <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(4,1fr)'}}>
+          <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
             <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">LSR TAT (p75), Power BI verified</div></div>
             <div className="cs-outcome"><div className="big"><em>15–20</em> min</div><div className="lab">Approver decision time per case</div></div>
             <div className="cs-outcome"><div className="big"><em>₹5 Cr</em></div><div className="lab">Annual licensing savings</div></div>
@@ -2126,7 +2223,267 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   );
 };
 
-Object.assign(window, { Hero, SectionHead, About, Sticky, Stats, Photo, Tools, ProjectCard, Timeline, Contact, Marquee, CaseStudy, ExtendedCaseStudy });
+/* ---------- Technical Verification: extended case study (8 sections) ---------- */
+
+const TechCaseStudy = ({ project, onClose, onNext }) => {
+  const contentRef = React.useRef(null);
+  const [progress, setProgress] = React.useState(0);
+  const [active, setActive] = React.useState(0);
+
+  const sections = React.useMemo(() => [
+    { key:'hero',    label:'Overview' },
+    { key:'tldr',    label:'TL;DR' },
+    { key:'before',  label:'The before' },
+    { key:'reframe', label:'Four problems → four goals' },
+    { key:'moves',   label:'Eight moves' },
+    { key:'capture', label:'Field-first capture' },
+    { key:'intel',   label:'The intelligence layer' },
+    { key:'impact',  label:'Before → after & impact' },
+  ], []);
+  const refs = React.useRef(sections.map(() => React.createRef()));
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const onScroll = () => {
+    const el = contentRef.current; if (!el) return;
+    const pct = el.scrollTop / Math.max(1, el.scrollHeight - el.clientHeight);
+    setProgress(Math.min(100, pct * 100));
+    const top = el.scrollTop + el.clientHeight * 0.30;
+    let a = 0;
+    refs.current.forEach((r, i) => { if (r.current && r.current.offsetTop <= top) a = i; });
+    setActive(a);
+  };
+  const scrollTo = (i) => {
+    const r = refs.current[i];
+    if (r.current && contentRef.current) contentRef.current.scrollTop = r.current.offsetTop - 32;
+  };
+  const handleNext = () => { if (contentRef.current) contentRef.current.scrollTop = 0; onNext(); };
+
+  return (
+    <div className="cs-fullscreen">
+      <div className="cs-sidebar">
+        <button className="cs-back" onClick={onClose}>← Back to canvas</button>
+        <div className="cs-sidebar-num">{project.code} · {project.name}</div>
+        <h2>Technical verification, <em>field-first</em></h2>
+        <div className="cs-meta-list">
+          <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
+          <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
+          <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
+          <div className="cs-meta-item">Year<strong>{project.year}</strong></div>
+        </div>
+        <div className="cs-toc">
+          {sections.map((s, i) => (
+            <button key={s.key}
+              className={`cs-toc-btn ${active === i ? 'active' : ''}`}
+              onClick={() => scrollTo(i)}>
+              {String(i+1).padStart(2,'0')} · {s.label}
+            </button>
+          ))}
+        </div>
+        <div className="cs-proj-nav">
+          <button className="cs-proj-btn" onClick={handleNext}>Next project →</button>
+        </div>
+      </div>
+
+      <div className="cs-content" ref={contentRef} onScroll={onScroll}>
+        <div className="cs-progress"><div className="cs-progress-fill" style={{width:`${progress}%`}}/></div>
+
+        {/* 01 — Overview */}
+        <div className="cs-hero" ref={refs.current[0]}>
+          <div className="cs-eyebrow">
+            <span>{project.audience}</span>
+            <span>{project.year}</span>
+            <span>{project.tags.join(' · ')}</span>
+          </div>
+          <h1>Technical verification — <em>from a 60-field Excel to the field</em></h1>
+          <p className="cs-lede">The technical valuation of pledged property ran as an email-and-Excel relay. I rebuilt it into a field-first mobile flow that auto-generates a signed, scored report and hands it straight to underwriting — deleting two entire manual "download-and-re-upload" legs.</p>
+          <div className="cs-meta-pills">
+            <span className="pill">Role<strong>{project.role}</strong></span>
+            <span className="pill">Team<strong>{project.team}</strong></span>
+            <span className="pill">Timeline<strong>[add — e.g. 8-wk discovery + design, Q_ 2025]</strong></span>
+            <span className="pill">Workstream<strong>Technical Verification, Parakh</strong></span>
+            <span className="pill">Company<strong>Piramal Capital</strong></span>
+            <span className="pill">Domain<strong>Field ops + vendor ecosystem</strong></span>
+          </div>
+        </div>
+
+        {/* 02 — TL;DR */}
+        <div className="cs-section" ref={refs.current[1]}>
+          <div className="cs-num">02 · The short version</div>
+          <h2>TL;<em>DR</em></h2>
+          <div className="cs-cols3">
+            <div className="cs-tile">
+              <h4>Problem</h4>
+              <p>A 60–70 field Excel was the "system." Reports were hand-typed, printed, physically signed and stamped, scanned, and re-uploaded — then a CPA re-keyed fields into Salesforce. Vendors were picked by word of mouth.</p>
+            </div>
+            <div className="cs-tile">
+              <h4>Approach</h4>
+              <p>Reuse every field that already exists, delete the physical detours, let the system decide the boring stuff (priority + routing), and move quality control upstream — as a structured mobile capture flow.</p>
+            </div>
+            <div className="cs-tile">
+              <h4>Impact</h4>
+              <p>Two full manual legs eliminated: the print/sign/stamp/scan, and the CPA's download-and-re-upload. Data is structured from the point of observation, so it flows to credit on its own.</p>
+            </div>
+          </div>
+          <div className="tv-note"><strong>Numbers:</strong> TAT, rework-rate and touch-count figures are placeholders below — drop your real / projected values in and I'll format them.</div>
+        </div>
+
+        {/* 03 — The before */}
+        <div className="cs-section" ref={refs.current[2]}>
+          <div className="cs-num">03 · The before</div>
+          <h2>The "system" was a <em>spreadsheet</em></h2>
+          <p>Technical verification ran as a long chain of manual handoffs stitched together over email and WhatsApp, across two routes — internal (verifier → BTM approval) and external (vendor manager → field verifier → sign & stamp). Both leaked time at every seam.</p>
+          <ul className="cs-list">
+            <li>A <strong style={{color:'var(--ink)'}}>60–70 field Excel</strong> was filled by hand to produce each report. Long, error-prone, no validation.</li>
+            <li><strong style={{color:'var(--ink)'}}>Physical sign &amp; stamp theatre</strong> — download, print, sign, stamp, scan, re-upload. A digital document taking a detour through a printer.</li>
+            <li>The <strong style={{color:'var(--ink)'}}>CPA as a human file-transfer service</strong> — downloading from email, extracting fields, re-keying into Salesforce.</li>
+            <li><strong style={{color:'var(--ink)'}}>Vendor allocation by vibes</strong> — assigned on the BTM's word of mouth, with no data on accuracy or punctuality.</li>
+            <li>Communication scattered across <strong style={{color:'var(--ink)'}}>email + WhatsApp</strong>, and <strong style={{color:'var(--ink)'}}>no prioritisation</strong> of cases by urgency or value.</li>
+          </ul>
+          <div className="tv-panel" style={{marginTop:32,maxWidth:820}}>
+            <div className="cap"><span className="tv-pill-b">Before</span> The legacy 60–70 field Excel — one report, one sheet</div>
+            <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" alt="Legacy Excel valuation report — a single sprawling spreadsheet with 60–70 fields across many sections" loading="lazy"/></div>
+          </div>
+          <p style={{marginTop:16,fontSize:15,color:'var(--ink-3)'}}>Scroll it. Every verifier filled this by hand, back at a desk, from memory — the gap where errors crept in.</p>
+        </div>
+
+        {/* 04 — Reframe */}
+        <div className="cs-section" ref={refs.current[3]}>
+          <div className="cs-num">04 · Synthesis</div>
+          <h2>Four problems, <em>four goals</em></h2>
+          <p>Clustering the pain, four problems were doing the real damage. Everything I designed maps back to one of them.</p>
+          <div className="cs-cols2">
+            <div className="cs-tile"><h4>01 · Data re-entered, not reused</h4><p>Sales captured collateral details; verifiers rebuilt them in Excel; CPAs re-keyed them into Salesforce.<br/><em style={{color:'var(--ink)'}}>→ Reuse every piece of data that already exists.</em></p></div>
+            <div className="cs-tile"><h4>02 · Physical steps in a digital process</h4><p>Print, sign, stamp, scan, re-upload.<br/><em style={{color:'var(--ink)'}}>→ Delete the physical detours entirely.</em></p></div>
+            <div className="cs-tile"><h4>03 · No intelligence in routing</h4><p>Neither which case to do first, nor which vendor to trust.<br/><em style={{color:'var(--ink)'}}>→ Let the system decide priority + allocation from data.</em></p></div>
+            <div className="cs-tile"><h4>04 · No feedback signal</h4><p>Nothing measured vendor quality or flagged a weak report before credit saw it.<br/><em style={{color:'var(--ink)'}}>→ Move quality control upstream.</em></p></div>
+          </div>
+        </div>
+
+        {/* 05 — Eight moves */}
+        <div className="cs-section" ref={refs.current[4]}>
+          <div className="cs-num">05 · The solution</div>
+          <h2>Eight connected <em>moves</em></h2>
+          <p>Roughly following a case's life — from the CPA opening it to the report landing in underwriting. The four highlighted below are the load-bearing ones.</p>
+          <div className="cs-numlist">
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 01</div><h5>Smart case prioritisation — one button, not a list</h5><p>A single "Start a new case" ranks cases by loan amount and sanction-readiness, and surfaces the highest-priority one. Search overrides when Sales flags something urgent.</p></div>
+            <div className="cs-numcard"><div className="n">Move 02</div><h5>Leverage the data Sales already captured</h5><p>The CPA screen pre-fills collateral details; the CPA only adds the 2–3 fields Sales can't know (Revenue Office, SRO name).</p></div>
+            <div className="cs-numcard"><div className="n">Move 03</div><h5>Unified document handling</h5><p>One upload serves both legal and technical verification; documents can be marked for physical pickup where originals are needed.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 04</div><h5>One-click initiation + intelligent vendor routing</h5><p>The system suggests a vendor from the collateral's pin code and that vendor's measured performance on it — replacing word-of-mouth with a self-improving allocation engine.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 05</div><h5>Field-first mobile capture — killing the Excel</h5><p>The 60–70 Excel fields become native inputs grouped into the same sections. On "Start verification" the app auto-captures lat/long; photos and details are captured on location.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 06</div><h5>Auto-generated, digitally signed report</h5><p>On submit, the report builds itself from structured entry and the pre-stored sign &amp; stamp PNG is appended — deleting the download → print → sign → stamp → scan → re-upload leg.</p></div>
+            <div className="cs-numcard"><div className="n">Move 07</div><h5>Manager review — approve or send back</h5><p>Send-back returns the case to the verifier with a remark; the correction loop lives inside the system instead of over email.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 08</div><h5>Scoring engine + straight-to-credit hand-off</h5><p>The BTM sees a generated score, red flags and good areas with a recommend, and the structured data flows directly into the credit underwriting grid.</p></div>
+          </div>
+        </div>
+
+        {/* 06 — Field-first capture (centerpiece) */}
+        <div className="cs-section" ref={refs.current[5]}>
+          <div className="cs-num">06 · The heart of it</div>
+          <h2>The Excel becomes <em>the field</em></h2>
+          <p>The verifier's spreadsheet turns into a structured mobile app: the same sections, now native input fields captured at the point of observation. The gap where "fill the Excel back at the desk" invited errors is gone.</p>
+
+          <div className="tv-ba">
+            <div className="tv-panel">
+              <div className="cap"><span className="tv-pill-b">Before</span> 60–70 fields, one sheet, by hand</div>
+              <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" alt="Legacy Excel valuation report" loading="lazy"/></div>
+            </div>
+            <div className="tv-panel">
+              <div className="cap"><span className="tv-pill-a">After</span> Structured mobile capture, on site</div>
+              <div className="tv-scroll-phone"><img src="uploads/pasted-1788100779950-0.png" alt="Rebuilt mobile verifier — Data Entry section list" loading="lazy"/></div>
+            </div>
+          </div>
+
+          <div className="cs-subhead">Inside a section — native fields, geo-proof, photos on location</div>
+          <div className="tv-phones">
+            <img className="tv-shot-phone" src="uploads/pasted-1788102984042-0.png" alt="Rebuilt mobile verifier — Basic Details with location auto-captured from GPS (lat/long shown on map)" loading="lazy"/>
+            <div style={{flex:1,minWidth:280,display:'flex',flexDirection:'column',gap:16,alignSelf:'center'}}>
+              <div className="cs-tile"><h4>Native fields, not cells</h4><p>Every Excel cell becomes a typed input in the same section — unlocking validation and, later, scoring.</p></div>
+              <div className="cs-tile"><h4>Auto lat/long geo-proof</h4><p>Tapping "Start verification" auto-captures coordinates — no manual entry, and tamper-resistant proof the verifier was on site.</p></div>
+              <div className="cs-tile"><h4>Captured on location</h4><p>Photos and every detail are entered on the ground and submitted — structured data instead of a spreadsheet reconstructed from memory.</p></div>
+            </div>
+          </div>
+
+          <div className="cs-subhead">On submit — the report signs itself</div>
+          <p>The vendor manager uploads their sign &amp; stamp once at onboarding. On submission the report is generated from the structured entry and the stored signature is appended — the printer detour is gone.</p>
+          <div className="tv-sign">
+            <div className="sigwrap">
+              <span className="sig">Chintan J.</span>
+              <div className="sigcap">Auto-appended · pre-stored sign &amp; stamp (PNG)</div>
+            </div>
+            <div className="tv-stamp"><span>Verified</span><span>Approved</span></div>
+          </div>
+        </div>
+
+        {/* 07 — Intelligence layer */}
+        <div className="cs-section" ref={refs.current[6]}>
+          <div className="cs-num">07 · Intelligence</div>
+          <h2>Let the system decide the <em>boring stuff</em></h2>
+
+          <div className="cs-subhead">Case prioritisation — one button, not a queue</div>
+          <p>Instead of a raw queue that invites cherry-picking, one action surfaces the highest-priority case — ranked by loan value and sanction-readiness. A list is a decision-fatigue tax; a single prioritised action quietly enforces the business's order.</p>
+          <div style={{marginTop:16}}><span className="tv-startbtn"><span className="plus">+</span> Start a new case</span></div>
+
+          <div className="cs-subhead">Vendor routing — measured, not remembered</div>
+          <p>The system suggests a vendor from the collateral's pin code and that vendor's measured correctness and punctuality on it. Allocation gets smarter with every case — and this is the same quality signal that feeds scoring.</p>
+          <div className="tv-vlist">
+            <div className="tv-vrow top"><span className="rank">1</span><span className="vn">Meridian Valuers <small>Pin 560016 · 214 cases</small></span><span className="vm">98% correct<br/>1.4h avg TAT</span><span className="tv-pick">Suggested</span></div>
+            <div className="tv-vrow"><span className="rank">2</span><span className="vn">Ashwin Associates <small>Pin 560016 · 156 cases</small></span><span className="vm">94% correct<br/>2.1h avg TAT</span></div>
+            <div className="tv-vrow"><span className="rank">3</span><span className="vn">Sri Valuation Co. <small>Pin 560016 · 88 cases</small></span><span className="vm">89% correct<br/>3.6h avg TAT</span></div>
+          </div>
+
+          <div className="cs-subhead">BTM scoring — read the signal, not the whole report</div>
+          <p>After the manager submits, the BTM doesn't wade through the full report — they see a generated score, its red flags and good areas, and an approve/reject recommendation. On approval the structured data flows directly into the credit underwriting grid.</p>
+          <div className="tv-browser">
+            <div className="bar">
+              <span className="d" style={{background:'#f2655f'}}/><span className="d" style={{background:'#f5bf4f'}}/><span className="d" style={{background:'#5bc46b'}}/>
+              <span className="addr">parakh.piramal.com / collateral / technical-report</span>
+            </div>
+            <div className="win"><img src="uploads/pasted-1788100816590-0.png" alt="BTM desktop approver — technical scrutiny report with report rating score, valuations, full report and approve / send back actions" loading="lazy"/></div>
+          </div>
+          <div className="cs-cols3" style={{marginTop:24}}>
+            <div className="cs-tile"><h4>Score + red flags</h4><p>Report strength surfaced up front with its weak and strong areas — quality control moved upstream of a human read.</p></div>
+            <div className="cs-tile"><h4>Approve / send back</h4><p>A clean decision. Send-back returns to the verifier with a remark; the loop stays in-system.</p></div>
+            <div className="cs-tile"><h4>Straight to credit</h4><p>Structured from the start, the data just moves — no CPA download, extract, re-upload.</p></div>
+          </div>
+        </div>
+
+        {/* 08 — Before → after & impact */}
+        <div className="cs-section" ref={refs.current[7]}>
+          <div className="cs-num">08 · Before → after</div>
+          <h2>What <em>shifted</em></h2>
+          <table className="tv-table">
+            <thead><tr><th></th><th>Before</th><th>After</th></tr></thead>
+            <tbody>
+              <tr><td>Report authoring</td><td className="dim">60–70 field Excel, by hand</td><td className="hi">Structured mobile fields, on-site</td></tr>
+              <tr><td>Sign &amp; stamp</td><td className="dim">Print → sign → stamp → scan → upload</td><td className="hi">Pre-stored PNG auto-appended</td></tr>
+              <tr><td>Geo proof</td><td className="dim">None / manual</td><td className="hi">Auto lat/long on "Start verification"</td></tr>
+              <tr><td>Vendor allocation</td><td className="dim">BTM's word of mouth</td><td className="hi">Data-driven by pin code + performance</td></tr>
+              <tr><td>CPA → Salesforce</td><td className="dim">Manual download, extract, re-upload</td><td className="hi">Structured data flows to credit</td></tr>
+              <tr><td>Prioritisation</td><td className="dim">None</td><td className="hi">Ranked by loan value + readiness</td></tr>
+              <tr><td>Query &amp; rectification</td><td className="dim">Email + WhatsApp</td><td className="hi">In-system loops with remarks</td></tr>
+              <tr><td>Quality check</td><td className="dim">Human reads full report</td><td className="hi">Auto-score + red flags + recommend</td></tr>
+            </tbody>
+          </table>
+          <div className="cs-big">Two full manual legs eliminated: the vendor manager's print/sign/stamp/scan, and the CPA's download-and-re-upload to Salesforce.</div>
+          <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
+            <div className="cs-outcome"><div className="big"><em>2</em></div><div className="lab">Manual legs removed</div></div>
+            <div className="cs-outcome"><div className="big"><em>[TAT]</em></div><div className="lab">Report TAT, before → after</div></div>
+            <div className="cs-outcome"><div className="big"><em>[%]</em></div><div className="lab">Rework rate reduction</div></div>
+            <div className="cs-outcome"><div className="big"><em>[N]</em></div><div className="lab">Vendors on data-driven routing</div></div>
+          </div>
+          <div className="tv-note"><strong>Bracketed metrics are placeholders.</strong> Send me your real or projected numbers and I'll drop them in (labelled as targets if not yet measured).</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+Object.assign(window, { Hero, SectionHead, About, Sticky, Stats, Photo, Tools, ProjectCard, Timeline, Contact, Marquee, CaseStudy, ExtendedCaseStudy, TechCaseStudy });
 
 </script>
 <script type="text/babel" data-presets="react">
@@ -2703,9 +3060,11 @@ const App = () => {
         <span className="hk">1–5</span><span>to teleport</span>
       </div>
 
-      {openCase && (openCase.extended
-        ? <ExtendedCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
-        : <CaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>)}
+      {openCase && (openCase.id === 'tech'
+        ? <TechCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
+        : openCase.extended
+          ? <ExtendedCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
+          : <CaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>)}
     </>
   );
 };
@@ -2783,7 +3142,44 @@ const Connectors = () => (
   </svg>
 );
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+/* ---------- Password gate ---------- */
+const Gate = ({ onUnlock }) => {
+  const [val, setVal] = React.useState('');
+  const [err, setErr] = React.useState('');
+  const submit = (e) => {
+    e.preventDefault();
+    if (val === 'designinginthevoid') {
+      try { sessionStorage.setItem('cj_unlocked', '1'); } catch (_) {}
+      onUnlock();
+    } else {
+      setErr('Incorrect password. Try again.');
+    }
+  };
+  return (
+    <div className="gate">
+      <div className="gate-card">
+        <div className="gate-eyebrow"><span className="bdot"/> Chintan Jat · Portfolio</div>
+        <h1>Enter the <em>canvas</em></h1>
+        <p>This portfolio is private. Enter the password to continue.</p>
+        <form onSubmit={submit}>
+          <input type="password" value={val} autoFocus placeholder="Password"
+            onChange={(e) => { setVal(e.target.value); setErr(''); }} />
+          <div className="err">{err}</div>
+          <button type="submit">Unlock</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const Root = () => {
+  const [unlocked, setUnlocked] = React.useState(() => {
+    try { return sessionStorage.getItem('cj_unlocked') === '1'; } catch (_) { return false; }
+  });
+  return unlocked ? <App/> : <Gate onUnlock={() => setUnlocked(true)}/>;
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Root/>);
 
 </script>
 </body>
