@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <title>Chintan Jat — Infinite Canvas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail" data-bg-color="#eef2f6">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#eef2f6"/>
+    <circle cx="600" cy="330" r="9" fill="#3f8f6b"/>
+    <text x="600" y="470" font-family="Georgia, serif" font-size="130" font-style="italic" fill="#1e2b3a" text-anchor="middle">CJ</text>
+    <text x="600" y="560" font-family="monospace" font-size="30" letter-spacing="6" fill="#5a6b7d" text-anchor="middle">INFINITE CANVAS</text>
+  </svg>
+</template>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,700&display=swap" rel="stylesheet">
@@ -280,17 +288,14 @@ button { font-family: inherit; }
 .photo-frame:hover { transform: rotate(0deg) scale(1.03); }
 .photo-frame .ph {
   width: 100%; height: 100%;
-  background:
-    repeating-linear-gradient(135deg,
-      oklch(0.82 0.03 235) 0 6px,
-      oklch(0.87 0.02 235) 6px 12px);
   border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--f-mono);
-  font-size: 17px;
-  color: oklch(0.4 0.05 240);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  overflow: hidden;
+}
+.photo-frame .ph img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
 }
 .photo-frame .caption {
   position: absolute;
@@ -344,8 +349,8 @@ button { font-family: inherit; }
 }
 
 /* Compact variant — used in the horizontal filmstrip work row */
-.project.compact { width: 310px; height: 445px; display: flex; flex-direction: column; }
-.project.compact .thumb { height: 190px; flex-shrink: 0; }
+.project.compact { width: 420px; height: 600px; display: flex; flex-direction: column; }
+.project.compact .thumb { height: 320px; flex-shrink: 0; }
 .project.compact .thumb .badge { top: 12px; left: 12px; font-size: 17px; padding: 5px 11px; letter-spacing: 0.1em; }
 .project.compact .thumb .ph { font-size: 17px; }
 .project.compact .body { padding: 18px 20px 22px; flex: 1; display: flex; flex-direction: column; }
@@ -438,60 +443,87 @@ button { font-family: inherit; }
 /* Timeline / experience */
 .timeline {
   width: 560px;
-  padding: 36px 40px;
+  padding: 38px 42px 30px;
+}
+.timeline .tl-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft);
 }
 .timeline h3 {
   font-family: var(--f-serif);
-  font-style: italic;
   font-weight: 700;
-  font-size: 32px;
-  margin: 0 0 4px;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  margin: 0;
   color: var(--ink);
 }
-.timeline .sub {
+.timeline .tl-count {
   font-family: var(--f-mono);
-  font-size: 17px;
+  font-size: 15px;
   color: var(--ink-3);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 26px;
 }
-.tline {
+.tline { display: flex; flex-direction: column; }
+.tl-group {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.tl-group:last-child { border-bottom: none; }
+.tl-co {
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.tl-group.is-multi {
   position: relative;
   padding-left: 18px;
-  border-left: 1px dashed var(--line);
 }
-.tline-item {
-  position: relative;
-  padding: 0 0 22px 22px;
-}
-.tline-item::before {
+.tl-group.is-multi::before {
   content: '';
   position: absolute;
-  left: -5px; top: 7px;
-  width: 9px; height: 9px;
-  background: var(--paper);
-  border: 1.5px solid var(--accent);
-  border-radius: 50%;
+  left: 0; top: 8px; bottom: 16px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.tl-group.is-multi .tl-co {
+  color: var(--accent);
+  font-family: var(--f-mono);
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+.tline-item {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 22px;
+  padding: 6px 0;
 }
 .tline-item .year {
   font-family: var(--f-mono);
-  font-size: 17px;
+  font-size: 16px;
   color: var(--ink-3);
-  letter-spacing: 0.1em;
-  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
 }
 .tline-item .role {
-  font-family: var(--f-serif);
-  font-size: 22px;
+  font-family: var(--f-sans);
+  font-weight: 500;
+  font-size: 19px;
   color: var(--ink);
-  line-height: 1.2;
+  line-height: 1.4;
 }
-.tline-item .co {
-  font-size: 17px;
-  color: var(--ink-2);
-  margin-top: 4px;
-  line-height: 1.5;
+.tl-group.is-multi .role { font-weight: 500; }
+.tl-group:not(.is-multi) .tline-item {
+  padding: 0;
+  margin-top: -4px;
 }
 
 /* Sticky note */
@@ -697,6 +729,12 @@ button { font-family: inherit; }
   font-size: 17px; color: var(--ink); margin-top: 3px;
   text-transform: none; letter-spacing: 0;
 }
+.cs-figma-link {
+  display: inline-block; margin-top: 3px; font-family: var(--f-sans); font-weight: 500;
+  font-size: 17px; color: var(--accent); text-transform: none; letter-spacing: 0;
+  text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .15s;
+}
+.cs-figma-link:hover { border-bottom-color: var(--accent); }
 .cs-toc {
   margin-top: auto; padding-top: 24px;
   border-top: 1px solid var(--line-soft);
@@ -846,6 +884,10 @@ button { font-family: inherit; }
 /* ---------- Extended case study (Parakh) ---------- */
 .cs-shot{width:100%;aspect-ratio:16/9;border:1.5px dashed var(--line);border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:var(--f-mono);font-size: 17px;letter-spacing:0.1em;color:var(--ink-3);text-transform:uppercase;margin:32px 0;line-height:1.6}
 .cs-shot span{max-width:520px}
+
+/* ---------- Hero image ---------- */
+.cs-macbook-stage{margin-top:8px;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg);}
+.cs-hero-img{display:block;width:100%;height:auto;}
 .cs-meta-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
 .cs-meta-pills .pill{font-family:var(--f-mono);font-size: 17px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-2);padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--paper)}
 .cs-meta-pills .pill strong{color:var(--ink);font-weight:500;margin-left:6px;font-family:var(--f-sans);text-transform:none;letter-spacing:0;font-size: 17px}
@@ -1362,32 +1404,6 @@ html[data-theme="mono"] {
 
 const PROJECTS = [
   {
-    id: 'legal',
-    code: '04',
-    name: 'Veritas',
-    title: 'Legal verification, re-imagined',
-    client: 'Legal Verification Portal',
-    audience: 'For litigators & in-house counsel',
-    year: '2024',
-    role: 'Lead Designer',
-    duration: '14 weeks',
-    team: '1 PM · 2 Eng · 1 Designer',
-    tags: ['Legal-tech', 'Workflow', 'Research-heavy'],
-    thumbLabel: 'VERITAS · DOCUMENT REVIEW',
-    summary: 'A verification portal that cuts a 4-day paralegal review down to 40 minutes, with an evidence-chain a judge can follow.',
-    lede: 'Lawyers were drowning in PDFs and stamp-verified scans. We rebuilt the verification flow around one question: can this be trusted in court?',
-    problem: 'Verification was a manual patchwork of email, spreadsheets and physical stamps. A single property title took 3–5 business days and audit trails were stitched together after the fact.',
-    research: 'Shadowed 12 paralegals across 4 firms. Observed that 78% of review time was spent correlating documents, not reading them. We mapped 41 distinct "trust checkpoints" that were never formalized.',
-    design: 'A stacked evidence timeline with source-of-truth badges, inline annotation, and a verifier confidence slider. Every action emits a cryptographic breadcrumb that composes into a court-admissible report.',
-    outcomes: [
-      { big: '−91%', lab: 'Review time' },
-      { big: '+4.2×', lab: 'Throughput / week' },
-      { big: '0', lab: 'Audit failures in yr 1' },
-    ],
-    quote: '"It\'s the first tool that didn\'t feel like a spreadsheet pretending to be software."',
-    quoteWho: 'Senior Partner, test firm',
-  },
-  {
     id: 'crm',
     code: '02',
     name: 'Relay',
@@ -1414,22 +1430,6 @@ const PROJECTS = [
     quoteWho: 'Senior agent, week 2 of rollout',
   },
   {
-    id: 'tech',
-    code: '03',
-    name: 'Parakh · Tech',
-    extended: true,
-    title: 'Technical verification, field-first',
-    client: 'Piramal Capital',
-    audience: 'For field verifiers, vendor managers & BTMs',
-    year: '2025',
-    role: 'Design lead — end-to-end',
-    duration: 'Multi-quarter',
-    team: '[add your 5-person split]',
-    tags: ['Field ops', 'Mobile capture', 'Fintech'],
-    thumbLabel: 'PARAKH \u00b7 TECHNICAL VERIFICATION',
-    summary: 'Turning a 60–70 field Excel relay into a field-first mobile capture flow that auto-generates a signed, scored report straight into underwriting.',
-  },
-  {
     id: 'parakh',
     code: '01',
     name: 'Parakh',
@@ -1442,36 +1442,29 @@ const PROJECTS = [
     duration: 'Multi-quarter',
     team: '1 designer + 1 business SPOC',
     tags: ['Legal-tech', 'B2B', 'Vendor ecosystem'],
+    figma: '',
     thumbLabel: 'PARAKH \u00b7 LEGAL VERIFICATION',
     summary: 'From 3 days to 2 hours \u2014 solo IC redesign across 400+ branches and 510 external advocates.',
   },
   {
-    id: 'atlas',
-    code: '05',
-    name: 'Atlas',
-    title: 'Portfolio analytics, at a glance',
-    client: 'Wealth-management dashboard',
-    audience: 'For advisors managing 200+ client books',
-    year: '2023',
-    role: 'Product Designer',
-    duration: '9 weeks',
-    team: '1 PM · 4 Eng · 1 Designer',
-    tags: ['Fintech', 'Data-viz', 'Dashboard'],
-    thumbLabel: 'ATLAS · ADVISOR VIEW',
-    summary: 'A dense, calm dashboard that gives advisors a full book of business in one screen — without feeling like a Bloomberg terminal.',
-    lede: 'Advisors were flipping between four tools before every client call. We built one screen that answered every pre-call question.',
-    problem: 'Advisors kept a spreadsheet, a CRM, a portfolio tracker and a news app open in parallel. Preparing for a 30-minute review call took 45 minutes of context assembly.',
-    research: 'Sat in on 14 client calls across 6 advisors. Mapped every question advisors got asked and where the answer lived. 82% of pre-call time was context-gathering, not analysis.',
-    design: 'A single-screen advisor console: client identity and next-conversation prompts pinned left, holdings and allocation in the center, market/news lens on the right. Everything filterable by the client currently on the phone.',
-    outcomes: [
-      { big: '−72%', lab: 'Pre-call prep time' },
-      { big: '3.4×', lab: 'Reviews handled per week' },
-      { big: '+11pt', lab: 'Advisor NPS' },
-    ],
-    quote: '"I stopped preparing for calls. I just open Atlas."',
-    quoteWho: 'Senior advisor, month 2',
+    id: 'tech',
+    code: '03',
+    name: 'Parakh · Tech',
+    extended: true,
+    title: 'Technical verification, field-first',
+    client: 'Piramal Capital',
+    audience: 'For field verifiers, vendor managers & BTMs',
+    year: '2025',
+    role: 'Design lead — end-to-end',
+    duration: 'Multi-quarter',
+    team: '[add your 5-person split]',
+    tags: ['Field ops', 'Mobile capture', 'Fintech'],
+    figma: '',
+    thumbLabel: 'PARAKH \u00b7 TECHNICAL VERIFICATION',
+    summary: 'Turning a 60–70 field Excel relay into a field-first mobile capture flow that auto-generates a signed, scored report straight into underwriting.',
   },
 ];
+
 
 const EXPERIENCE = [
   { year: 'May 2024 — Now',  role: 'UX Lead — Credit',        co: 'Piramal Finance', note: 'Scaling AI adoption in credit decisioning from 13% → 67%; institutionalizing MVP scoping, design systems and coded prototypes.' },
@@ -1499,13 +1492,11 @@ const ISLANDS = [
   { id: 'photo',      kind: 'photo',     x: 790,  y: 1840 },
   { id: 'tools',      kind: 'tools',     x: 200,  y: 2320 },
 
-  // ── Work cluster — single-row filmstrip, all 5 projects fit in one snap ─
-  { id: 'sec-work',   kind: 'section',   x: 1700, y: 3300, num: '02 — Work',  h1: 'A few things', em: 'I made' },
-  { id: 'proj-1',     kind: 'project',   x: 1700, y: 3540, project: PROJECTS[3], compact: true },
-  { id: 'proj-2',     kind: 'project',   x: 2028, y: 3540, project: PROJECTS[1], compact: true },
-  { id: 'proj-3',     kind: 'project',   x: 2356, y: 3540, project: PROJECTS[2], compact: true },
-  { id: 'proj-4',     kind: 'project',   x: 2684, y: 3540, project: PROJECTS[0], compact: true },
-  { id: 'proj-5',     kind: 'project',   x: 3012, y: 3540, project: PROJECTS[4], compact: true },
+  // ── Work cluster — single-row filmstrip, 3 projects in one snap ─
+  { id: 'sec-work',   kind: 'section',   x: 1700, y: 3280, num: '02 — Work',  h1: 'A few things', em: 'I made' },
+  { id: 'proj-1',     kind: 'project',   x: 1700, y: 3479, project: PROJECTS[1], compact: true },
+  { id: 'proj-2',     kind: 'project',   x: 2160, y: 3479, project: PROJECTS[0], compact: true },
+  { id: 'proj-3',     kind: 'project',   x: 2620, y: 3479, project: PROJECTS[2], compact: true },
 
   // ── Experience cluster — left side (snap ~y:6060) ────────────────────────
   { id: 'sec-exp',    kind: 'section',   x: 200,  y: 5660, num: '03 — Path', h1: 'How I got', em: 'to this point' },
@@ -1542,9 +1533,8 @@ const Hero = () => (
       Designer living on an <em>infinite canvas</em> — sketching quiet software in the void.
     </p>
     <div className="meta-row">
-      <div>Based in<strong>Pune, India</strong></div>
-      <div>Works<strong>Anywhere, remote</strong></div>
-      <div>Designs for<strong>Fintech · Legaltech · Ops</strong></div>
+      <div>Based in<strong>Bengaluru, India</strong></div>
+      <div>Total Experience<strong>11+ years</strong></div>
     </div>
   </div>
 );
@@ -1602,7 +1592,7 @@ const Stats = () => (
 
 const Photo = () => (
   <div className="card photo-frame">
-    <div className="ph">PORTRAIT · PLACEHOLDER</div>
+    <div className="ph"><img src="uploads/pasted-1788262895975-0.jpeg" alt="Chintan Jat" loading="lazy"/></div>
     <div className="caption">Chintan, mid-blank-canvas</div>
   </div>
 );
@@ -1612,16 +1602,10 @@ const Tools = () => (
     <h4>What I draw with</h4>
     <ul>
       <li className="accent">Figma</li>
-      <li className="accent">Protopie</li>
-      <li>Framer</li>
-      <li>After Effects</li>
-      <li>Rive</li>
-      <li>HTML / CSS</li>
       <li>Notion</li>
       <li>FigJam</li>
-      <li>Maze</li>
-      <li>Dovetail</li>
       <li className="accent">Claude</li>
+      <li>Make</li>
     </ul>
   </div>
 );
@@ -1645,16 +1629,29 @@ const ProjectCard = ({ project, onOpen, compact }) => (
 
 const Timeline = () => {
   const { EXPERIENCE } = window.PORTFOLIO_DATA;
+  // Group consecutive entries at the same company into one chapter.
+  const groups = [];
+  EXPERIENCE.forEach((e) => {
+    const last = groups[groups.length - 1];
+    if (last && last.co === e.co) last.items.push(e);
+    else groups.push({ co: e.co, items: [e] });
+  });
   return (
     <div className="card timeline">
-      <h3>The path so far.</h3>
-      <div className="sub">Every step that led here</div>
+      <div className="tl-head">
+        <h3>The path so far</h3>
+        <span className="tl-count">{groups.length} chapters</span>
+      </div>
       <div className="tline">
-        {EXPERIENCE.map((e, i) => (
-          <div className="tline-item" key={i}>
-            <div className="year">{e.year}</div>
-            <div className="role">{e.role}</div>
-            <div className="co">{e.co} — {e.note}</div>
+        {groups.map((g, gi) => (
+          <div className={"tl-group" + (g.items.length > 1 ? " is-multi" : "")} key={gi}>
+            <div className="tl-co">{g.co}</div>
+            {g.items.map((e, i) => (
+              <div className="tline-item" key={i}>
+                <div className="year">{e.year}</div>
+                <div className="role">{e.role}</div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -1664,7 +1661,6 @@ const Timeline = () => {
 
 const Contact = () => (
   <div className="card contact">
-    <h3>Let's make <em>something together.</em></h3>
     <p>If you have a problem that needs a fresh canvas, I want to hear it. Half-baked ideas are welcome — I've built full products from worse starting points.</p>
     <div className="contact-links">
       <a className="clink" href="mailto:jatchintan@gmail.com">
@@ -1850,14 +1846,10 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
     { key:'research',label:'Research' },
     { key:'insight', label:'Synthesis & insight' },
     { key:'reframe', label:'Reframing' },
-    { key:'ideation',label:'Ideation' },
     { key:'tradeoffs',label:'Decisions & trade-offs' },
     { key:'solution',label:'Final solution' },
-    { key:'valid',   label:'Validation' },
     { key:'impact',  label:'Impact' },
     { key:'diff',    label:"What I'd do differently" },
-    { key:'next',    label:"What's next" },
-    { key:'appendix',label:'Appendix' },
   ], []);
   const refs = React.useRef(sections.map(() => React.createRef()));
 
@@ -1898,6 +1890,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
           <div className="cs-meta-item">Year<strong>{project.year}</strong></div>
+          {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc" style={{maxHeight:'42vh',overflowY:'auto'}}>
           {sections.map((s, i) => (
@@ -1925,7 +1918,9 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           </div>
           <h1>Piramal Parakh — <em>from 3 days to 2 hours</em></h1>
           <p className="cs-lede">Redesigning legal verification for India's lending industry as a solo IC across 400+ branches and 510 external advocates.</p>
-          <Shot label="Hero image — split before/after of SFDC vs. Parakh approver view" />
+          <div className="cs-macbook-stage">
+            <img className="cs-hero-img" src="uploads/legal-verification-hero.jpg" alt="Parakh Collateral Sanctions — Legal Scrutiny Report approver view shown on a MacBook" loading="lazy"/>
+          </div>
         </div>
 
         {/* 02 — TL;DR */}
@@ -2071,23 +2066,9 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           </ul>
         </div>
 
-        {/* 09 — Ideation */}
+        {/* 09 — Trade-offs */}
         <div className="cs-section" ref={refs.current[8]}>
-          <div className="cs-num">09 · Ideation</div>
-          <h2>Ideation at the <em>data layer</em></h2>
-          <p>The real ideation wasn't picking UI patterns — it was deciding what data lives where.</p>
-          <div className="cs-numlist">
-            <div className="cs-numcard"><div className="n">Decision space 01</div><h5>Which fields to pre-fill from CPA data</h5><p>Mapped every field in the LSR against the SFDC schema. ~70% pre-fillable, 30% requiring advocate input.</p></div>
-            <div className="cs-numcard"><div className="n">Decision space 02</div><h5>Which fields to surface to the approver</h5><p>Worked with the Legal Head and senior counsel to identify the 4–5 fields that actually drive approval or rejection. These got top-of-page real estate.</p></div>
-            <div className="cs-numcard"><div className="n">Decision space 03</div><h5>UI patterns for variable data entry</h5><p>Tested 2–3 layouts with advocates during build. Settled on a single-column form with inline source-of-truth tags, so advocates always see which fields were CPA-captured vs. their own input.</p></div>
-          </div>
-          <Shot label="Field-mapping table — LSR fields on left, source (CPA / advocate / approver-only) on right" />
-          <Shot label="2–3 UI variations side by side with the chosen layout marked" />
-        </div>
-
-        {/* 10 — Trade-offs */}
-        <div className="cs-section" ref={refs.current[9]}>
-          <div className="cs-num">10 · Design decisions</div>
+          <div className="cs-num">09 · Design decisions</div>
           <h2>Decisions and <em>what I gave up</em></h2>
           <p>Three decisions defined the project. Each one cost something.</p>
           <div className="cs-tradeoff">
@@ -2106,7 +2087,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
               <div className="cell"><div className="lab">Chose</div><p>Pre-fill with explicit visual tags showing “this field came from CPA — confirm or correct.”</p></div>
               <div className="cell"><div className="lab">Gave up</div><p>Independent advocate verification of basic property data.</p></div>
             </div>
-            <div className="note">Mitigated by source-of-truth tagging that makes every field's provenance visible.</div>
+            <div className="note">Mitigated by source-of-truth tagging that makes every field's provenance visible. Field mapping against the SFDC schema showed about 70% of the LSR was pre-fillable from CPA data, with the remaining 30% requiring advocate input.</div>
           </div>
           <div className="cs-tradeoff">
             <div className="n">Decision 03</div>
@@ -2119,9 +2100,9 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 11 — Solution */}
-        <div className="cs-section" ref={refs.current[10]}>
-          <div className="cs-num">11 · Final solution</div>
+        {/* 10 — Solution */}
+        <div className="cs-section" ref={refs.current[9]}>
+          <div className="cs-num">10 · Final solution</div>
           <h2>Three views, <em>one connected system</em></h2>
           <p>The platform replaced an email chain and a Salesforce upload with a single coordinated workspace.</p>
 
@@ -2136,23 +2117,14 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-subhead">Approver view</div>
           <p>Decision-critical fields surfaced at the top. Full report available on demand. System flags fields requiring attention based on rule-based logic.</p>
           <Shot label="Approver case detail screen with attention flags visible" />
+
+          <div className="cs-subhead">How I validated it</div>
+          <p>Without a formal user testing budget, validation happened iteratively through the build. I reviewed flows weekly with the business SPOC and Legal Head, and tested 2 to 3 UI variations with advocates before locking. I worked directly with engineering during the build, catching data-mapping edge cases and vendor login issues before launch. After rollout, some advocates were re-entering pre-filled fields they hadn't recognised as pre-filled, so I changed the visual treatment of pre-filled versus blank fields within the first week.</p>
         </div>
 
-        {/* 12 — Validation */}
-        <div className="cs-section" ref={refs.current[11]}>
-          <div className="cs-num">12 · Validation</div>
-          <h2><em>Validation</em></h2>
-          <p>Without a formal user testing budget, validation happened iteratively through the build.</p>
-          <div className="cs-cols3">
-            <div className="cs-tile"><h4>Iterative design validation</h4><p>Reviewed flows weekly with the business SPOC and Legal Head. Tested 2–3 UI variations with advocates before locking.</p></div>
-            <div className="cs-tile"><h4>Tech validation</h4><p>Worked directly with engineering during build. Caught and fixed several integration issues pre-launch — data mapping edge cases and vendor login flows.</p></div>
-            <div className="cs-tile"><h4>Post-rollout adjustments</h4><p>Some advocates didn't initially recognize that certain fields were pre-filled and were re-entering data. Fixed within the first rollout week by changing the visual treatment of pre-filled vs. blank fields.</p></div>
-          </div>
-        </div>
-
-        {/* 13 — Impact */}
-        <div className="cs-section" ref={refs.current[12]}>
-          <div className="cs-num">13 · Impact</div>
+        {/* 11 — Impact */}
+        <div className="cs-section" ref={refs.current[10]}>
+          <div className="cs-num">11 · Impact</div>
           <h2><em>Impact</em></h2>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
             <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">LSR TAT (p75), Power BI verified</div></div>
@@ -2172,43 +2144,22 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
             <p>“My team is no longer buried in inconsistent reports — they're empowered to make high-quality risk assessments faster. This is the benchmark for digital transformation for us.”</p>
             <span className="who">— Legal Head, Piramal Capital</span>
           </div>
+          <div className="cs-subhead">Where it goes next</div>
+          <ul className="cs-list">
+            <li>OCR-based capture to remove the remaining CPA data-entry step, with multilingual handwriting as the current blocker.</li>
+            <li>Learned approver risk signals in place of rule-based flags, and a case for the uniform LSR format becoming an NBFC industry standard.</li>
+          </ul>
         </div>
 
-        {/* 14 — Differently */}
-        <div className="cs-section" ref={refs.current[13]}>
-          <div className="cs-num">14 · Reflection</div>
+        {/* 12 — Differently */}
+        <div className="cs-section" ref={refs.current[11]}>
+          <div className="cs-num">12 · Reflection</div>
           <h2>What I'd <em>do differently</em></h2>
           <div className="cs-numlist">
             <div className="cs-numcard"><div className="n">01</div><h5>Pilot before scaling</h5><p>I went from internal alignment to 510-vendor rollout without a structured pilot. I got lucky on adoption. Next time I'd run one branch for four weeks with measurable pre/post baselines.</p></div>
             <div className="cs-numcard"><div className="n">02</div><h5>Instrument earlier</h5><p>I have outcome numbers but not enough input-metric telemetry to defend causality precisely. I'd push for analytics instrumentation in v1, not v2.</p></div>
             <div className="cs-numcard"><div className="n">03</div><h5>Spend less time on Phase 1</h5><p>The one-week SFDC replacement was over-celebrated and didn't move the real needle. I should have used that political capital to start Phase 2 sooner.</p></div>
           </div>
-        </div>
-
-        {/* 15 — Next */}
-        <div className="cs-section" ref={refs.current[14]}>
-          <div className="cs-num">15 · Roadmap</div>
-          <h2>What's <em>next</em></h2>
-          <div className="cs-cols3">
-            <div className="cs-tile"><h4>Now — OCR-based data capture</h4><p>Eliminating the remaining CPA data entry step. Multilingual handwriting is the current blocker; multiple language coverage is improving rapidly.</p></div>
-            <div className="cs-tile"><h4>Next — Approver pattern intelligence</h4><p>Moving from rule-based “fields requiring attention” to learned risk signals as decision data accumulates.</p></div>
-            <div className="cs-tile"><h4>Later — Industry consortium standard</h4><p>The uniform LSR format is currently Piramal-only. There's a credible case for an industry standard across NBFCs.</p></div>
-          </div>
-        </div>
-
-        {/* 16 — Appendix */}
-        <div className="cs-section" ref={refs.current[15]}>
-          <div className="cs-num">16 · Appendix</div>
-          <h2><em>Appendix</em></h2>
-          <p>Available on request during deeper conversations.</p>
-          <ul className="cs-list">
-            <li>Full research synthesis and affinity map</li>
-            <li>Field-overlap audit (CPA-captured data vs. advocate-typed fields)</li>
-            <li>LSR format alignment workshop deck used with legal leadership</li>
-            <li>Approver decision-signal logic spec</li>
-            <li>Stakeholder map and influence strategy notes</li>
-            <li>Vendor adoption tracking over rollout period</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -2266,6 +2217,7 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
           <div className="cs-meta-item">Year<strong>{project.year}</strong></div>
+          {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc">
           {sections.map((s, i) => (
