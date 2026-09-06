@@ -694,8 +694,9 @@ button { font-family: inherit; }
   padding: 36px 32px;
   border-right: 1px solid var(--line-soft);
   background: var(--bg);
-  overflow: hidden;
+  overflow-y: auto;
 }
+.cs-toc { flex-shrink: 0; }
 .cs-back {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--f-mono);
@@ -1018,7 +1019,7 @@ button { font-family: inherit; }
 .gate-card{width:min(420px,92vw);background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:44px 40px}
 .gate-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:12px;align-items:center;margin-bottom:22px}
 .gate .bdot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px oklch(0.58 0.13 235 / .18)}
-.gate h1{font-family:var(--f-serif);font-weight:800;font-size:34px;letter-spacing:-.02em;margin:0 0 8px;color:var(--ink)}
+.gate h1{font-family:var(--f-serif);font-weight:400;font-size:34px;letter-spacing:-.02em;margin:0 0 8px;color:var(--ink)}
 .gate h1 em{font-style:italic;color:var(--accent)}
 .gate p{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 26px}
 .gate form{display:flex;flex-direction:column;gap:12px}
@@ -1829,7 +1830,7 @@ const CaseStudy = ({ project, onClose, onNext }) => {
 /* ---------- Extended case study (16-section long-scroll) ---------- */
 
 const Shot = ({ label }) => (
-  <div className="cs-shot"><span>[SCREENSHOT: {label}]</span></div>
+  <div className="cs-shot"><span>{label ? `[SCREENSHOT: ${label}]` : ''}</span></div>
 );
 
 const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
@@ -1838,16 +1839,13 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   const [active, setActive] = React.useState(0);
 
   const sections = React.useMemo(() => [
-    { key:'hero',    label:'Hero' },
-    { key:'tldr',    label:'TL;DR' },
-    { key:'context', label:'The business problem' },
-    { key:'users',   label:'The user problem' },
-    { key:'role',    label:'Role & constraints' },
-    { key:'research',label:'Research' },
-    { key:'insight', label:'Synthesis & insight' },
-    { key:'reframe', label:'Reframing' },
-    { key:'tradeoffs',label:'Decisions & trade-offs' },
-    { key:'solution',label:'Final solution' },
+    { key:'hero',    label:'Overview' },
+    { key:'brief',   label:'What I was asked to do' },
+    { key:'phase1',  label:'Phase 1 — the workflow fix' },
+    { key:'research',label:'Going back to the users' },
+    { key:'problems',label:'Six problems, two releases' },
+    { key:'phase2',  label:'Phase 2 — the ideal version' },
+    { key:'align',   label:'Getting everyone on board' },
     { key:'impact',  label:'Impact' },
     { key:'diff',    label:"What I'd do differently" },
   ], []);
@@ -1923,242 +1921,160 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 02 — TL;DR */}
+        {/* 02 — The brief */}
         <div className="cs-section" ref={refs.current[1]}>
-          <div className="cs-num">02 · The short version</div>
-          <h2>TL;<em>DR</em></h2>
-          <div className="cs-cols3">
-            <div className="cs-tile">
-              <h4>Problem</h4>
-              <p>Legal verification was a 3-day p75 bottleneck blocking loan disbursal. Approvers were buried in inconsistent 7-page reports from 510 external advocates across 400+ branches.</p>
-            </div>
-            <div className="cs-tile">
-              <h4>Approach</h4>
-              <p>Solo two-phase redesign. Phase 1 replaced the SFDC + email chain with a unified platform, shipped in one week. Phase 2 standardized the LSR format and templatized data entry so advocates capture only variable fields.</p>
-            </div>
-            <div className="cs-tile">
-              <h4>Impact</h4>
-              <p>TAT 3 days → ~2 hours (p75). Approver decision time cut to 15–20 minutes. ₹5 Cr annual licensing savings. 510 vendors onboarded onto a single format.</p>
-            </div>
-          </div>
+          <div className="cs-num">02 · The brief</div>
+          <h2>Replace Salesforce for <em>three roles</em></h2>
+          <p>I joined the project in April. I was walked through the current Salesforce workflow and told to rebuild it for CPAs and Approvers, and to build something new for Verifiers, who had never been in the system at all — their entire process ran on email, WhatsApp and printed paper.</p>
+          <p>The Salesforce licences renewed in August. Design had to be done in 15 days so there was time for development and UAT. Seven role workflows in that window. This story follows one of them: the Agency <strong style={{color:'var(--ink)'}}>Legal Verifier</strong> and the agency manager who signs off their reports.</p>
+          <Shot label="" />
         </div>
 
-        {/* 03 — Context */}
+        {/* 03 — Phase 1 */}
         <div className="cs-section" ref={refs.current[2]}>
-          <div className="cs-num">03 · Context</div>
-          <h2>The business <em>problem</em></h2>
-          <p>Piramal Capital's loan origination flow has a mandatory legal verification step — the LSR (Legal Search Report) — before disbursal. The work was distributed across 510 external advocates and coordinated by CPAs in 400+ branches, each producing reports in their own format.</p>
-          <p>Reports were emailed to a CPA, who manually uploaded them into Salesforce for approver review. The resulting bottleneck averaged 3 days per case at p75 (sourced from Power BI analytics).</p>
-          <p>At Piramal's loan volume, every day of delay translated directly to disbursal slippage and opportunity cost on locked capital. The stakeholder ask was simple: reduce legal verification TAT without compromising risk-assessment quality.</p>
-          <Shot label="Loan origination flow diagram with legal verification highlighted as the bottleneck step" />
+          <div className="cs-num">03 · Phase 1</div>
+          <h2>I shipped the <em>obvious fix first</em></h2>
+          <p>The workflow itself was clearly broken, and I could see how without any study. So I designed it and handed it to the developers straight away.</p>
+          <div className="cs-cols2">
+            <div className="cs-tile">
+              <h4>What it fixed</h4>
+              <ul className="cs-list">
+                <li>Cases now flow inside the platform instead of over email and WhatsApp</li>
+                <li>Signature and stamp uploaded once at vendor onboarding, so the print–sign–scan loop disappears</li>
+                <li>A rich text report the external lawyer fills in and submits, no Word file, no CPA re-upload</li>
+                <li>CPA and Approver licences could be sunset</li>
+              </ul>
+            </div>
+            <div className="cs-tile">
+              <h4>What it didn't fix</h4>
+              <p>It moved the same work onto a screen. The report was still whatever the vendor wanted it to be, and still just as long to fill in and just as hard to read.</p>
+            </div>
+          </div>
+          <div className="cs-big">I wasn't satisfied with this. I had solved it from a walkthrough and my own judgement, not from anything I had seen a verifier or an approver actually do.</div>
+          <Shot label="" />
         </div>
 
-        {/* 04 — The user problem */}
+        {/* 04 — Research */}
         <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · The user problem</div>
-          <h2>Three users, <em>one broken artifact</em></h2>
-          <p>Three roles, three different pains, one shared root cause.</p>
-          <div className="cs-cols3">
+          <div className="cs-num">04 · Going back to the users</div>
+          <h2>So I went and <em>watched them work</em></h2>
+          <p>I spoke to national legal heads, branch approvers and external verifiers, and pulled 15–20 real reports from different vendors to read side by side.</p>
+          <div className="cs-cols2">
             <div className="cs-tile">
-              <h4>Advocate (external)</h4>
-              <p>Typing the same boilerplate sections across every case. No template, no shared format. 2–3 days per report.</p>
+              <h4>With approvers</h4>
+              <p>Sat with them while they read live reports and made a call on them.</p>
             </div>
             <div className="cs-tile">
-              <h4>CPA (internal coordinator)</h4>
-              <p>Acting as a manual email-to-SFDC relay. Receiving inconsistent report formats and extracting "important remarks" by hand.</p>
-            </div>
-            <div className="cs-tile">
-              <h4>Approver (credit risk)</h4>
-              <p>Reading 7-page free-form reports from 510 different advocates. Couldn't build pattern recognition because no two reports looked alike.</p>
+              <h4>With verifiers</h4>
+              <p>Watched them fill their own Word files, section by section, and asked what each field came from.</p>
             </div>
           </div>
-          <div className="cs-big">The highest-leverage pain wasn't speed — it was format chaos, which forced every approver to re-learn how to read every report.</div>
+          <div className="cs-frame">
+            <div className="kicker">The question I kept asking</div>
+            <p className="stmt">“Where in this report are you typing something somebody else already typed?”</p>
+          </div>
+          <Shot label="" />
         </div>
 
-        {/* 05 — Role & constraints */}
+        {/* 05 — Problems → two releases */}
         <div className="cs-section" ref={refs.current[4]}>
-          <div className="cs-num">05 · My role & constraints</div>
-          <h2>Solo IC on an <em>org-wide systems redesign</em></h2>
-          <p>I ran this end-to-end as the only designer. No PM, no dedicated engineering team, no co-designers. One business SPOC facilitated stakeholder access; everything inside that door was mine.</p>
+          <div className="cs-num">05 · What came out of it</div>
+          <h2>Six problems, <em>two releases</em></h2>
+          <p>Two of the six were already covered by what I had shipped. The other four were the real work, and none of them were visible from the walkthrough.</p>
           <div className="cs-cols2">
             <div className="cs-tile">
-              <h4>Owned (solo)</h4>
+              <h4>Already shipped — Phase 1</h4>
               <ul className="cs-list">
-                <li>Research design and execution</li>
-                <li>All UX flows for advocate, CPA, and approver</li>
-                <li>Stakeholder alignment workshops with Legal Head and senior counsel</li>
-                <li>Tech feasibility validation with shared engineering resources</li>
-                <li>Rollout sequencing across 400+ branches</li>
+                <li>Salesforce sunset</li>
+                <li>Broken workflow — email, WhatsApp, print, scan, re-upload</li>
               </ul>
             </div>
             <div className="cs-tile">
-              <h4>Worked with</h4>
+              <h4>Phase 2 — the ideal version</h4>
               <ul className="cs-list">
-                <li>1 business SPOC who scheduled stakeholder access and removed political friction</li>
-                <li>Engineering capacity that was borrowed, not dedicated</li>
+                <li>Every vendor's report ordered differently</li>
+                <li>Data entry far longer than it needed to be</li>
+                <li>Managers cherry-picking easy cases</li>
+                <li>Approvers reading 6–7 pages per case with no way to build a habit</li>
               </ul>
             </div>
           </div>
-          <div className="cs-subhead">Constraints</div>
-          <ul className="cs-list">
-            <li>No formal research budget — shadowed 3 CPAs in-branch + vendor calls</li>
-            <li>Rollout across 400+ branches with no centralized training function</li>
-            <li>Legacy SFDC integration had to be routed around, not removed</li>
-          </ul>
-          <Shot label="Stakeholder map — me at center, arrows to Legal Head, branch managers, CPAs, advocates, engineering, with SPOC as the broker" />
+          <div className="cs-big">The approver's reading problem and the verifier's typing problem had the same answer: one fixed report format, with everything already known filled in.</div>
+          <Shot label="" />
         </div>
 
-        {/* 06 — Research */}
+        {/* 06 — Phase 2 */}
         <div className="cs-section" ref={refs.current[5]}>
-          <div className="cs-num">06 · Research</div>
-          <h2><em>Research</em></h2>
-          <p>I had one week, no budget, and access to two channels: in-branch shadowing and vendor calls. I used both.</p>
-          <div className="cs-cols2">
-            <div className="cs-tile">
-              <h4>Method</h4>
-              <p>Contextual inquiry through in-branch shadowing, plus remote semi-structured interviews with advocates and legal leadership.</p>
-            </div>
-            <div className="cs-tile">
-              <h4>Sample (1 week)</h4>
-              <p>3 CPAs shadowed in-branch across their full workflow · 5–8 advocates interviewed via phone and video on their report creation process · Legal Head + 1 branch legal manager interviewed on decision criteria.</p>
-            </div>
-          </div>
-          <div className="cs-subhead">Baseline data</div>
-          <p>Power BI analytics established a p75 TAT of 3 days, broken down by step: advocate report creation, CPA upload, approver review.</p>
-          <div className="cs-frame">
-            <div className="kicker">Key question driving the work</div>
-            <p className="stmt">“Where do you re-do work that's already been done somewhere else in this flow?”</p>
-          </div>
-          <div className="cs-subhead">What surprised me</div>
-          <p>Advocates were typing data that CPAs had already entered upstream. The redundancy was invisible to everyone because no one had ever sat with both roles in the same week.</p>
-          <Shot label="Research artifacts — shadowing notes excerpt, Power BI baseline chart, affinity-cluster sketch" />
+          <div className="cs-num">06 · Phase 2</div>
+          <h2>One format, <em>a third of the typing</em></h2>
+
+          <div className="cs-subhead">Fixed the order of the sections</div>
+          <p>Across the reports I read, the sections were jumbled — B sitting near E, D near A. I settled one order with the national heads and approvers and built it into the screen, the same for every vendor.</p>
+          <Shot label="" />
+
+          <div className="cs-subhead">Cut the entry to what only the verifier knows</div>
+          <p>Most of the property and collateral detail in the report had already been entered upstream by the CPA. For each section I separated what the system already knows — from the CPA's entry, the transaction type and the property type — from what only the verifier can find on site. The first is shown to them. The second is all they fill.</p>
+          <Shot label="" />
+
+          <div className="cs-subhead">Moved the report to the site</div>
+          <p>The verifier taps start verification when they reach the property. The system records the location itself. The sections that used to live in a 60–70 field reference sheet are now screens with input fields and photos, so the report is captured as data on the ground and submitted from there.</p>
+          <Shot label="" />
+
+          <div className="cs-subhead">Gave the manager a queue instead of an inbox</div>
+          <p>Open cases can be filtered by pin code and area, selected together and assigned to a verifier in one action, which also makes each one trackable afterwards. On submit the manager either sends it back with a remark, or approves — and approving generates the report with their signature and stamp already on it.</p>
+          <Shot label="" />
+
+          <div className="cs-subhead">Answered the approver's questions upfront</div>
+          <p>Watching approvers read, they were scanning six or seven pages for four or five answers — is the title clear, are the LSR provisions met, and a few more of that kind. I turned those into a short set of questions the verifier answers directly, and put the answers at the top of the approver's screen. The full report stays one click away.</p>
+          <Shot label="" />
         </div>
 
-        {/* 07 — Insight */}
+        {/* 07 — Alignment */}
         <div className="cs-section" ref={refs.current[6]}>
-          <div className="cs-num">07 · Synthesis</div>
-          <h2>Three insights that <em>drove every decision</em></h2>
-          <div className="cs-numlist">
-            <div className="cs-numcard"><div className="n">01</div><h5>The CPA's manual relay step was a symptom, not the disease</h5><p>The real cost was the lack of a canonical structure. Eliminating CPA upload without fixing format would just push chaos forward.</p></div>
-            <div className="cs-numcard"><div className="n">02</div><h5>~70% of LSR content is static or pre-known</h5><p>Boilerplate legal language and property data were already captured upstream by CPAs. Advocates were re-typing what we already had.</p></div>
-            <div className="cs-numcard"><div className="n">03</div><h5>Approvers don't read reports — they hunt for 4–5 decision signals</h5><p>The 7-page document was a search problem disguised as a reading problem.</p></div>
-          </div>
-          <div className="cs-big">Insight 02 was the unlock. Once I mapped which fields CPAs had already captured against what advocates were typing, the redesign wrote itself.</div>
+          <div className="cs-num">07 · Alignment</div>
+          <h2>Getting everyone <em>on board</em></h2>
+          <p>Fixing the format meant telling 510 vendors their report was changing. I put the two problems to the stakeholders first: your approvers can't build a habit because every report is ordered differently, and your verifiers spend so long typing that it pushes the case TAT out.</p>
+          <p>Then the trade. Yes, the order is fixed now, but the typing drops by about 70% — because everything the CPA enters is carried forward. I walked the national legal manager, the branch legal manager and a verifier through the whole flow in Figma.</p>
+          <Shot label="" />
         </div>
 
-        {/* 08 — Reframe */}
+        {/* 08 — Impact */}
         <div className="cs-section" ref={refs.current[7]}>
-          <div className="cs-num">08 · Reframing</div>
-          <h2>From workflow optimization to <em>content redesign</em></h2>
-          <div className="cs-frame">
-            <div className="kicker">Original framing</div>
-            <p className="stmt">“How might we reduce TAT in legal verification?”</p>
-          </div>
-          <div className="cs-frame" style={{marginTop:16,borderColor:'var(--accent)',background:'var(--accent-soft)'}}>
-            <div className="kicker">Reframed (post-research)</div>
-            <p className="stmt">“How might we let advocates capture only the variable data, and let approvers see only the decision-critical signals?”</p>
-          </div>
-          <div className="cs-subhead">Success metrics defined upfront</div>
-          <ul className="cs-list">
-            <li><strong style={{color:'var(--ink)'}}>Primary:</strong> Median LSR TAT per case (target: &lt;24h)</li>
-            <li><strong style={{color:'var(--ink)'}}>Input:</strong> Advocate report creation time, approver decision time, rework requests per case</li>
-            <li><strong style={{color:'var(--ink)'}}>Guardrail:</strong> Risk assessment quality — no increase in post-disbursal legal disputes</li>
-          </ul>
-        </div>
-
-        {/* 09 — Trade-offs */}
-        <div className="cs-section" ref={refs.current[8]}>
-          <div className="cs-num">09 · Design decisions</div>
-          <h2>Decisions and <em>what I gave up</em></h2>
-          <p>Three decisions defined the project. Each one cost something.</p>
-          <div className="cs-tradeoff">
-            <div className="n">Decision 01</div>
-            <h5>Uniform LSR format vs. per-advocate flexibility</h5>
-            <div className="grid">
-              <div className="cell"><div className="lab">Chose</div><p>A single standardized format across all 510 advocates.</p></div>
-              <div className="cell"><div className="lab">Gave up</div><p>Legacy branch-specific report conventions that some senior approvers had built habits around.</p></div>
-            </div>
-            <div className="note">Resolved by co-designing the final format with the Legal Head and aligning approvers to the new structure before rollout.</div>
-          </div>
-          <div className="cs-tradeoff">
-            <div className="n">Decision 02</div>
-            <h5>Pre-fill CPA data vs. zero-trust re-verification</h5>
-            <div className="grid">
-              <div className="cell"><div className="lab">Chose</div><p>Pre-fill with explicit visual tags showing “this field came from CPA — confirm or correct.”</p></div>
-              <div className="cell"><div className="lab">Gave up</div><p>Independent advocate verification of basic property data.</p></div>
-            </div>
-            <div className="note">Mitigated by source-of-truth tagging that makes every field's provenance visible. Field mapping against the SFDC schema showed about 70% of the LSR was pre-fillable from CPA data, with the remaining 30% requiring advocate input.</div>
-          </div>
-          <div className="cs-tradeoff">
-            <div className="n">Decision 03</div>
-            <h5>Surface approval signal vs. neutral data view</h5>
-            <div className="grid">
-              <div className="cell"><div className="lab">Chose</div><p>A “fields requiring attention” layer driven by rule logic derived from Legal Head interviews.</p></div>
-              <div className="cell"><div className="lab">Gave up</div><p>A purely neutral information layout.</p></div>
-            </div>
-            <div className="note">Risk: anchoring bias. Mitigated by framing as “attention” not “verdict,” with the full report one click away.</div>
-          </div>
-        </div>
-
-        {/* 10 — Solution */}
-        <div className="cs-section" ref={refs.current[9]}>
-          <div className="cs-num">10 · Final solution</div>
-          <h2>Three views, <em>one connected system</em></h2>
-          <p>The platform replaced an email chain and a Salesforce upload with a single coordinated workspace.</p>
-
-          <div className="cs-subhead">Advocate view</div>
-          <p>Templatized report with pre-filled static sections — boilerplate plus CPA-captured property data. Advocate fills only variable fields (EC findings, encumbrances, observations) through a guided form with single-click inputs where possible.</p>
-          <Shot label="Advocate data entry screen with pre-fill markers visible" />
-
-          <div className="cs-subhead">CPA view</div>
-          <p>Upfront data entry with vendor auto-suggestion based on location, TAT history, and cost. The CPA's role shifts from email relay to intake.</p>
-          <Shot label="CPA case creation + vendor selection screen" />
-
-          <div className="cs-subhead">Approver view</div>
-          <p>Decision-critical fields surfaced at the top. Full report available on demand. System flags fields requiring attention based on rule-based logic.</p>
-          <Shot label="Approver case detail screen with attention flags visible" />
-
-          <div className="cs-subhead">How I validated it</div>
-          <p>Without a formal user testing budget, validation happened iteratively through the build. I reviewed flows weekly with the business SPOC and Legal Head, and tested 2 to 3 UI variations with advocates before locking. I worked directly with engineering during the build, catching data-mapping edge cases and vendor login issues before launch. After rollout, some advocates were re-entering pre-filled fields they hadn't recognised as pre-filled, so I changed the visual treatment of pre-filled versus blank fields within the first week.</p>
-        </div>
-
-        {/* 11 — Impact */}
-        <div className="cs-section" ref={refs.current[10]}>
-          <div className="cs-num">11 · Impact</div>
+          <div className="cs-num">08 · Impact</div>
           <h2><em>Impact</em></h2>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
-            <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">LSR TAT (p75), Power BI verified</div></div>
+            <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">Report turnaround (p75)</div></div>
+            <div className="cs-outcome"><div className="big"><em>~70%</em></div><div className="lab">Of verifier typing removed</div></div>
             <div className="cs-outcome"><div className="big"><em>15–20</em> min</div><div className="lab">Approver decision time per case</div></div>
-            <div className="cs-outcome"><div className="big"><em>₹5 Cr</em></div><div className="lab">Annual licensing savings</div></div>
-            <div className="cs-outcome"><div className="big"><em>510</em></div><div className="lab">Vendors onboarded onto a unified format</div></div>
+            <div className="cs-outcome"><div className="big"><em>510</em></div><div className="lab">Vendors on one format</div></div>
           </div>
+          <div className="cs-subhead">Steps that no longer exist</div>
+          <ul className="cs-list">
+            <li>The manager printing, signing, stamping and scanning every report</li>
+            <li>The CPA downloading the report and uploading it into Salesforce</li>
+            <li>The report being passed around by email and WhatsApp</li>
+          </ul>
           <div className="cs-savings">
-            <h5>How the ₹5 Cr breaks down</h5>
+            <h5>Licence savings</h5>
             <ul className="cs-list">
-              <li>400+ branches × 2 SFDC licenses (1 CPA + 1 Legal Manager per branch) — sunsetted</li>
-              <li>510 vendor SFDC licenses avoided for future scaling</li>
-              <li>Numbers verified against finance</li>
+              <li>400+ branches × 2 Salesforce licences (1 CPA + 1 Legal Manager each) — sunset</li>
+              <li>510 vendor licences avoided as the network grows</li>
             </ul>
           </div>
           <div className="cs-quote">
-            <p>“My team is no longer buried in inconsistent reports — they're empowered to make high-quality risk assessments faster. This is the benchmark for digital transformation for us.”</p>
-            <span className="who">— Legal Head, Piramal Capital</span>
+            <p>[   ]</p>
+            <span className="who">[   ]</span>
           </div>
-          <div className="cs-subhead">Where it goes next</div>
-          <ul className="cs-list">
-            <li>OCR-based capture to remove the remaining CPA data-entry step, with multilingual handwriting as the current blocker.</li>
-            <li>Learned approver risk signals in place of rule-based flags, and a case for the uniform LSR format becoming an NBFC industry standard.</li>
-          </ul>
         </div>
 
-        {/* 12 — Differently */}
-        <div className="cs-section" ref={refs.current[11]}>
-          <div className="cs-num">12 · Reflection</div>
+        {/* 09 — Differently */}
+        <div className="cs-section" ref={refs.current[8]}>
+          <div className="cs-num">09 · Reflection</div>
           <h2>What I'd <em>do differently</em></h2>
           <div className="cs-numlist">
-            <div className="cs-numcard"><div className="n">01</div><h5>Pilot before scaling</h5><p>I went from internal alignment to 510-vendor rollout without a structured pilot. I got lucky on adoption. Next time I'd run one branch for four weeks with measurable pre/post baselines.</p></div>
-            <div className="cs-numcard"><div className="n">02</div><h5>Instrument earlier</h5><p>I have outcome numbers but not enough input-metric telemetry to defend causality precisely. I'd push for analytics instrumentation in v1, not v2.</p></div>
-            <div className="cs-numcard"><div className="n">03</div><h5>Spend less time on Phase 1</h5><p>The one-week SFDC replacement was over-celebrated and didn't move the real needle. I should have used that political capital to start Phase 2 sooner.</p></div>
+            <div className="cs-numcard"><div className="n">01</div><h5>Start the research on day one, in parallel</h5><p>I shipped Phase 1 first and studied after. It worked, but the four problems that mattered most were sitting there the whole time — I could have been finding them while Phase 1 was in build.</p></div>
+            <div className="cs-numcard"><div className="n">02</div><h5>Get verifiers into the room</h5><p>The people whose work changed most were spoken for by their managers. Two or three verifiers in the review calls would have caught things earlier.</p></div>
+            <div className="cs-numcard"><div className="n">03</div><h5>Measure the format, not just the outcome</h5><p>I can show the turnaround moved. I can't yet show which sections still slow a verifier down, which is where the next cut would come from.</p></div>
           </div>
         </div>
       </div>
@@ -3116,8 +3032,12 @@ const Gate = ({ onUnlock }) => {
   );
 };
 
+// Set GATE_ENABLED = true to bring the password screen back.
+const GATE_ENABLED = false;
+
 const Root = () => {
   const [unlocked, setUnlocked] = React.useState(() => {
+    if (!GATE_ENABLED) return true;
     try { return sessionStorage.getItem('cj_unlocked') === '1'; } catch (_) { return false; }
   });
   return unlocked ? <App/> : <Gate onUnlock={() => setUnlocked(true)}/>;
