@@ -916,6 +916,9 @@ button { font-family: inherit; }
 .cs-tradeoff .note{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);font-size: 17px;color:var(--ink-3);font-style:italic}
 .cs-subhead{font-family:var(--f-mono);font-size: 17px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin:36px 0 10px}
 .cs-quote{padding:36px 40px;margin-top:28px;background:var(--bg);border-left:2px solid var(--accent);border-radius:0 12px 12px 0}
+.cs-diagram-slot{display:flex;flex-direction:column;gap:16px;justify-content:space-between;min-height:300px;padding:20px;border:1.5px dashed var(--line);border-radius:14px;background:repeating-linear-gradient(45deg,transparent,transparent 10px,var(--line-soft) 10px,var(--line-soft) 11px)}
+.cs-diagram-tag{font-family:var(--f-mono);font-size:14px;letter-spacing:0.06em;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.cs-diagram-note{align-self:center;margin:auto 0;font-family:var(--f-mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3)}
 .cs-quote p{font-family:var(--f-serif);font-style:italic;font-size:24px;line-height:1.45;color:var(--ink);margin:0;max-width:none}
 .cs-quote .who{display:block;margin-top:16px;font-family:var(--f-mono);font-size: 17px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);font-style:normal}
 .cs-savings{margin-top:28px;padding:28px 30px;border:1px solid var(--line-soft);border-radius:14px;background:var(--paper)}
@@ -1405,32 +1408,6 @@ html[data-theme="mono"] {
 
 const PROJECTS = [
   {
-    id: 'crm',
-    code: '02',
-    name: 'Relay',
-    title: 'A CRM shaped around the telecaller',
-    client: 'Fintech Telecaller CRM',
-    audience: 'For 400+ agents at a growing lender',
-    year: '2025',
-    role: 'Product Designer',
-    duration: '22 weeks',
-    team: '1 PM · 6 Eng · 2 Designers',
-    tags: ['Fintech', 'CRM', 'Ops'],
-    thumbLabel: 'RELAY · AGENT CONSOLE',
-    summary: 'A call-centric dashboard built for the human on the phone, not the manager in a spreadsheet. Context, dispositions and next-best-action in one breath.',
-    lede: 'We threw out the tabs-and-tickets model and built a single-screen console where the call is the primary object.',
-    problem: 'Agents juggled 6 tabs per call: customer profile, loan history, dispositions, scripts, compliance, and callback calendar. Average handle time was 11 minutes; switching cost was eating conversion.',
-    research: 'Paired with 20 agents for 3 days each. Recorded screen + audio. Top finding: the *first 15 seconds* of a call determined 72% of outcomes — and agents were still searching for the customer record when those 15 seconds expired.',
-    design: 'A T-shaped layout: customer identity pinned left, real-time call intelligence across the top, and a single-column action stack right. Dispositions live behind a hotkey ring that never steals focus from the call.',
-    outcomes: [
-      { big: '−38%', lab: 'Avg handle time' },
-      { big: '+19%', lab: 'First-call resolution' },
-      { big: '9.1/10', lab: 'Agent CSAT' },
-    ],
-    quote: '"I stopped clicking. I can finally just talk to the customer."',
-    quoteWho: 'Senior agent, week 2 of rollout',
-  },
-  {
     id: 'parakh',
     code: '01',
     name: 'Parakh',
@@ -1497,7 +1474,6 @@ const ISLANDS = [
   { id: 'sec-work',   kind: 'section',   x: 1700, y: 3280, num: '02 — Work',  h1: 'A few things', em: 'I made' },
   { id: 'proj-1',     kind: 'project',   x: 1700, y: 3479, project: PROJECTS[1], compact: true },
   { id: 'proj-2',     kind: 'project',   x: 2160, y: 3479, project: PROJECTS[0], compact: true },
-  { id: 'proj-3',     kind: 'project',   x: 2620, y: 3479, project: PROJECTS[2], compact: true },
 
   // ── Experience cluster — left side (snap ~y:6060) ────────────────────────
   { id: 'sec-exp',    kind: 'section',   x: 200,  y: 5660, num: '03 — Path', h1: 'How I got', em: 'to this point' },
@@ -1512,7 +1488,7 @@ const ISLANDS = [
 const SECTIONS = [
   { id: 'hero',    label: 'Home',  center: { x: 620,  y: 400  } },
   { id: 'about',   label: 'About', center: { x: 620,  y: 2020 } },
-  { id: 'work',    label: 'Work',  center: { x: 2511, y: 3640 } },
+  { id: 'work',    label: 'Work',  center: { x: 2090, y: 3640 } },
   { id: 'exp',     label: 'Path',  center: { x: 600,  y: 6080 } },
   { id: 'contact', label: 'Talk',  center: { x: 2060, y: 7440 } },
 ];
@@ -1585,7 +1561,7 @@ const Stats = () => (
       <div className="s-lab">People use what I make daily</div>
     </div>
     <div>
-      <div className="s-num"><em>3</em></div>
+      <div className="s-num"><em>2</em></div>
       <div className="s-lab">Case studies on this canvas</div>
     </div>
   </div>
@@ -1833,6 +1809,105 @@ const Shot = ({ label }) => (
   <div className="cs-shot"><span>{label ? `[SCREENSHOT: ${label}]` : ''}</span></div>
 );
 
+/* Phase-1 workflow diagrams — the legal-verification relay, drawn whiteboard-style.
+   variant="before" (grey panel) and variant="after" (green panel). */
+const FlowDiagram = ({ variant }) => {
+  const NODE = '#ffffff', STROKE = '#6b6b6b', TXT = '#2b2b2b';
+  const CFG = {
+    before: {
+      panel: '#e9e9e9', border: '#d3d3d3', badgeBg: '#6f6f6f', badgeFg: '#ffffff', label: 'Before',
+      vb: '0 0 1040 690', nw: 250, nh: 120,
+      nodes: [
+        { cx: 155, cy: 130, lines: ['CPA assigns the case', 'to Agency'] },
+        { cx: 520, cy: 130, lines: ['Manager assigns the', 'Verifier at the branch', 'and forwards the', 'email to it'] },
+        { cx: 885, cy: 130, lines: ['Verifier does the title', 'search and does the', 'data entry for the LSR'] },
+        { cx: 885, cy: 350, lines: ['Verifier mails the LSR', 'file back to the', 'Manager'] },
+        { cx: 520, cy: 350, lines: ['Report printed, signed', 'and stamped by hand,', 'scanned again'] },
+        { cx: 155, cy: 350, lines: ['CPA downloads', 'scanned Reports'] },
+        { cx: 155, cy: 570, lines: ['CPA re-uploads into', 'Salesforce'] },
+        { cx: 520, cy: 570, lines: ['Approver reads PDF'] },
+        { cx: 885, cy: 570, lines: ['LSR is sent to Credit', 'Underwriter for', 'sanctioning the case'] },
+      ],
+      edges: [
+        { d: 'M280,130 L395,130', lx: 337.5, ly: 130, label: 'Case sent via email' },
+        { d: 'M645,130 L760,130', lx: 702.5, ly: 130, label: 'Follow-up' },
+        { d: 'M885,190 L885,290', lx: 885,   ly: 240, label: 'Report drafted' },
+        { d: 'M760,350 L645,350', lx: 702.5, ly: 350, label: 'File received' },
+        { d: 'M395,350 L280,350', lx: 337.5, ly: 350, label: 'Scan uploaded' },
+        { d: 'M155,410 L155,510', lx: 155,   ly: 460, label: 'Manual re-upload' },
+        { d: 'M280,570 L395,570' },
+        { d: 'M645,570 L760,570' },
+        { d: 'M520,630 L520,656 L16,656 L16,130 L30,130', lx: 258, ly: 656, label: 'Approver replies with changes over email if needed' },
+      ],
+    },
+    after: {
+      panel: '#e6f6e2', border: '#c3e6ba', badgeBg: '#bfe9b6', badgeFg: '#2f5d2a', label: 'After',
+      vb: '0 0 1180 700', nw: 230, nh: 180,
+      nodes: [
+        { cx: 145,     cy: 160, lines: ['CPA assigns the case', 'to Agency'] },
+        { cx: 441.67,  cy: 160, lines: ['Manager assigns the', 'Verifier through the', 'system via multi', 'select'] },
+        { cx: 738.33,  cy: 160, lines: ['Advocate Writes', 'Report in Rich-Text', 'Editor and submits', 'in Platform'] },
+        { cx: 1035,    cy: 160, lines: ['Manager Verifies the', 'LSR and Submits the', 'Report or sends back', 'if any changes', 'needed'] },
+        { cx: 1035,    cy: 570, lines: ['Sign and Stamp', 'automatically applied', '(Uploaded Once at', 'Onboarding)'] },
+        { cx: 441.67,  cy: 570, shape: 'diamond', w: 270, h: 230, lines: ['Approver', 'Reviews', 'In-Platform'] },
+        { cx: 145,     cy: 570, lines: ['LSR is sent to Credit', 'Underwriter for', 'sanctioning the case'] },
+      ],
+      edges: [
+        { d: 'M260,160 L326.67,160',       lx: 293,    ly: 160, label: ['Case assigned', 'via system'] },
+        { d: 'M556.67,160 L623.33,160',    lx: 590,    ly: 160, label: 'Assigned' },
+        { d: 'M853.33,160 L920,160' },
+        { d: 'M1035,250 L1035,480',        lx: 1035,   ly: 365, label: 'Submit the case' },
+        { d: 'M920,570 L576.67,570' },
+        { d: 'M306.67,570 L260,570' },
+        { d: 'M441.67,455 L441.67,250',    lx: 441.67, ly: 352, label: 'If any change is needed' },
+      ],
+    },
+  };
+  const c = CFG[variant];
+  const LH = 20;
+  const mk = 'arr-' + variant;
+  const label = (lx, ly, lines) => {
+    const arr = Array.isArray(lines) ? lines : [lines];
+    const w = Math.max(...arr.map(s => s.length)) * 7.2 + 12;
+    const h = arr.length * 17 + 6;
+    const start = ly - ((arr.length - 1) * 17) / 2;
+    return (
+      <g>
+        <rect x={lx - w / 2} y={ly - h / 2} width={w} height={h} fill={c.panel} />
+        <text x={lx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15" fill="#3a3a3a" fontFamily="'Geist', sans-serif">
+          {arr.map((s, i) => <tspan key={i} x={lx} dy={i === 0 ? 0 : 17}>{s}</tspan>)}
+        </text>
+      </g>
+    );
+  };
+  return (
+    <div style={{ position: 'relative', background: c.panel, border: '1px solid ' + c.border, borderRadius: 16, padding: '44px 26px 24px', marginTop: 16 }}>
+      <span style={{ position: 'absolute', top: 14, left: 16, fontFamily: "'Geist', sans-serif", fontSize: 14, fontWeight: 500, color: c.badgeFg, background: c.badgeBg, padding: '3px 11px', borderRadius: 6 }}>{c.label}</span>
+      <svg viewBox={c.vb} style={{ width: '100%', height: 'auto', display: 'block' }}>
+        <defs>
+          <marker id={mk} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill={STROKE} /></marker>
+        </defs>
+        {c.edges.map((e, i) => <path key={'e' + i} d={e.d} fill="none" stroke={STROKE} strokeWidth="2" markerEnd={'url(#' + mk + ')'} />)}
+        {c.nodes.map((n, i) => {
+          const start = n.cy - ((n.lines.length - 1) * LH) / 2;
+          const txt = (
+            <text x={n.cx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15.5" fill={TXT} fontFamily="'Geist', sans-serif">
+              {n.lines.map((ln, li) => <tspan key={li} x={n.cx} dy={li === 0 ? 0 : LH}>{ln}</tspan>)}
+            </text>
+          );
+          if (n.shape === 'diamond') {
+            const hw = n.w / 2, hh = n.h / 2;
+            const pts = `${n.cx},${n.cy - hh} ${n.cx + hw},${n.cy} ${n.cx},${n.cy + hh} ${n.cx - hw},${n.cy}`;
+            return <g key={i}><polygon points={pts} fill={NODE} stroke={STROKE} strokeWidth="2" strokeLinejoin="round" />{txt}</g>;
+          }
+          return <g key={i}><rect x={n.cx - c.nw / 2} y={n.cy - c.nh / 2} width={c.nw} height={c.nh} rx={7} fill={NODE} stroke={STROKE} strokeWidth="2" />{txt}</g>;
+        })}
+        {c.edges.map((e, i) => e.label ? <g key={'l' + i}>{label(e.lx, e.ly, e.label)}</g> : null)}
+      </svg>
+    </div>
+  );
+};
+
 const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   const contentRef = React.useRef(null);
   const [progress, setProgress] = React.useState(0);
@@ -1842,12 +1917,10 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
     { key:'hero',    label:'Overview' },
     { key:'brief',   label:'What I was asked to do' },
     { key:'phase1',  label:'Phase 1 — the workflow fix' },
-    { key:'research',label:'Going back to the users' },
-    { key:'problems',label:'Six problems, two releases' },
+    { key:'observe', label:'What I saw on the ground' },
     { key:'phase2',  label:'Phase 2 — the ideal version' },
     { key:'align',   label:'Getting everyone on board' },
     { key:'impact',  label:'Impact' },
-    { key:'diff',    label:"What I'd do differently" },
   ], []);
   const refs = React.useRef(sections.map(() => React.createRef()));
 
@@ -1887,7 +1960,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
-          <div className="cs-meta-item">Year<strong>{project.year}</strong></div>
+          <div className="cs-meta-item">Timeline<strong>20 days · Aug 2022</strong></div>
           {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc" style={{maxHeight:'42vh',overflowY:'auto'}}>
@@ -1927,120 +2000,89 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <h2>Replace Salesforce for <em>three roles</em></h2>
           <p>I joined the project in April. I was walked through the current Salesforce workflow and told to rebuild it for CPAs and Approvers, and to build something new for Verifiers, who had never been in the system at all — their entire process ran on email, WhatsApp and printed paper.</p>
           <p>The Salesforce licences renewed in August. Design had to be done in 15 days so there was time for development and UAT. Seven role workflows in that window. This story follows one of them: the Agency <strong style={{color:'var(--ink)'}}>Legal Verifier</strong> and the agency manager who signs off their reports.</p>
-          <Shot label="" />
         </div>
 
         {/* 03 — Phase 1 */}
         <div className="cs-section" ref={refs.current[2]}>
           <div className="cs-num">03 · Phase 1</div>
           <h2>I shipped the <em>obvious fix first</em></h2>
-          <p>The workflow itself was clearly broken, and I could see how without any study. So I designed it and handed it to the developers straight away.</p>
-          <div className="cs-cols2">
-            <div className="cs-tile">
-              <h4>What it fixed</h4>
-              <ul className="cs-list">
-                <li>Cases now flow inside the platform instead of over email and WhatsApp</li>
-                <li>Signature and stamp uploaded once at vendor onboarding, so the print–sign–scan loop disappears</li>
-                <li>A rich text report the external lawyer fills in and submits, no Word file, no CPA re-upload</li>
-                <li>CPA and Approver licences could be sunset</li>
-              </ul>
-            </div>
-            <div className="cs-tile">
-              <h4>What it didn't fix</h4>
-              <p>It moved the same work onto a screen. The report was still whatever the vendor wanted it to be, and still just as long to fill in and just as hard to read.</p>
-            </div>
-          </div>
+          <p>The workflow itself was clearly broken, and I could see how without any study. So I redrew the path a case takes — where the report is written, how it gets signed, who moves it along — and handed it to the developers straight away.</p>
+
+          <div className="cs-subhead">The workflow, before and after</div>
+          <img src="uploads/pasted-1788718640538-0.png" alt="Before — the paper-and-inbox legal-verification relay" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:16}}/>
+          <img src="uploads/pasted-1788718650932-0.png" alt="After — one case, one thread, in-platform" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:20}}/>
+          <p style={{marginTop:20}}>With that, CPA and Approver Salesforce licences could be sunset.</p>
+
+          <div className="cs-subhead">What it still didn't fix</div>
+          <p>It moved the same work onto a screen. The report was still whatever the vendor wanted it to be, and still just as long to fill in and just as hard to read.</p>
           <div className="cs-big">I wasn't satisfied with this. I had solved it from a walkthrough and my own judgement, not from anything I had seen a verifier or an approver actually do.</div>
-          <Shot label="" />
         </div>
 
-        {/* 04 — Research */}
+        {/* 04 — Observations + problems (merged) */}
         <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · Going back to the users</div>
-          <h2>So I went and <em>watched them work</em></h2>
-          <p>I spoke to national legal heads, branch approvers and external verifiers, and pulled 15–20 real reports from different vendors to read side by side.</p>
+          <div className="cs-num">04 · What I saw on the ground</div>
+          <h2>Watching the work changed <em>the problem</em></h2>
+          <p>Phase 1 was built from a walkthrough. Before Phase 2 I went and watched the work itself: I sat with national legal heads and branch approvers while they read live reports and made a call, watched external verifiers fill their own Word files section by section, and pulled 15–20 real reports from different vendors to read side by side.</p>
+          <p>What I found on the ground wasn't the problem I'd been handed. The brief was "rebuild the workflow." The work pointed somewhere else entirely — at the report itself, and how much of it was people re-doing work that had already been done.</p>
+
+          <img src="uploads/Frame 12 compressed.jpg" alt="Legal approver working at a whiteboard, beside a spread of vendor reports in inconsistent formats from different agencies" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8,marginBottom:4}}/>
+
           <div className="cs-cols2">
             <div className="cs-tile">
-              <h4>With approvers</h4>
-              <p>Sat with them while they read live reports and made a call on them.</p>
+              <h4>What I saw approvers do</h4>
+              <p>Scan six or seven pages to find four or five answers — and never in the same place twice, because every vendor ordered the report differently.</p>
             </div>
             <div className="cs-tile">
-              <h4>With verifiers</h4>
-              <p>Watched them fill their own Word files, section by section, and asked what each field came from.</p>
+              <h4>What I saw verifiers do</h4>
+              <p>Re-type detail that already existed upstream — property and collateral facts the CPA had entered days earlier — into a Word file, by hand.</p>
             </div>
           </div>
+
           <div className="cs-frame">
-            <div className="kicker">The question I kept asking</div>
-            <p className="stmt">“Where in this report are you typing something somebody else already typed?”</p>
+            <div className="kicker">What the observation told me</div>
+            <p className="stmt">The task wasn't to move a broken workflow onto a screen. It was to stop everyone re-typing work that had already been done, and to make every report land in the same shape.</p>
           </div>
-          <Shot label="" />
+
+          <div className="cs-subhead">The four problems it surfaced</div>
+          <ul className="cs-list">
+            <li><strong style={{color:'var(--ink)'}}>Every vendor's report was ordered differently</strong> — approvers could never build a reading habit.</li>
+            <li><strong style={{color:'var(--ink)'}}>Data entry was far longer than it needed to be</strong> — verifiers re-typed what the CPA already knew.</li>
+            <li><strong style={{color:'var(--ink)'}}>Approvers read 6–7 pages per case</strong> to find a handful of answers.</li>
+            <li><strong style={{color:'var(--ink)'}}>Managers could cherry-pick the easy cases</strong> — the one problem a report format couldn't touch.</li>
+          </ul>
+
+          <div className="cs-big">Three of those four had the same answer: one standard report format, with everything already known filled in. So I chose to templatize the report — and that became Phase 2.</div>
         </div>
 
-        {/* 05 — Problems → two releases */}
+        {/* 05 — Phase 2 */}
         <div className="cs-section" ref={refs.current[4]}>
-          <div className="cs-num">05 · What came out of it</div>
-          <h2>Six problems, <em>two releases</em></h2>
-          <p>Two of the six were already covered by what I had shipped. The other four were the real work, and none of them were visible from the walkthrough.</p>
-          <div className="cs-cols2">
-            <div className="cs-tile">
-              <h4>Already shipped — Phase 1</h4>
-              <ul className="cs-list">
-                <li>Salesforce sunset</li>
-                <li>Broken workflow — email, WhatsApp, print, scan, re-upload</li>
-              </ul>
-            </div>
-            <div className="cs-tile">
-              <h4>Phase 2 — the ideal version</h4>
-              <ul className="cs-list">
-                <li>Every vendor's report ordered differently</li>
-                <li>Data entry far longer than it needed to be</li>
-                <li>Managers cherry-picking easy cases</li>
-                <li>Approvers reading 6–7 pages per case with no way to build a habit</li>
-              </ul>
-            </div>
-          </div>
-          <div className="cs-big">The approver's reading problem and the verifier's typing problem had the same answer: one fixed report format, with everything already known filled in.</div>
-          <Shot label="" />
-        </div>
-
-        {/* 06 — Phase 2 */}
-        <div className="cs-section" ref={refs.current[5]}>
-          <div className="cs-num">06 · Phase 2</div>
+          <div className="cs-num">05 · Phase 2</div>
           <h2>One format, <em>a third of the typing</em></h2>
 
           <div className="cs-subhead">Fixed the order of the sections</div>
           <p>Across the reports I read, the sections were jumbled — B sitting near E, D near A. I settled one order with the national heads and approvers and built it into the screen, the same for every vendor.</p>
-          <Shot label="" />
+          <img src="uploads/section_order compressed.jpg" alt="Report with a fixed, ordered list of sections — Part 1 Basic details through Part 7" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
 
           <div className="cs-subhead">Cut the entry to what only the verifier knows</div>
           <p>Most of the property and collateral detail in the report had already been entered upstream by the CPA. For each section I separated what the system already knows — from the CPA's entry, the transaction type and the property type — from what only the verifier can find on site. The first is shown to them. The second is all they fill.</p>
-          <Shot label="" />
-
-          <div className="cs-subhead">Moved the report to the site</div>
-          <p>The verifier taps start verification when they reach the property. The system records the location itself. The sections that used to live in a 60–70 field reference sheet are now screens with input fields and photos, so the report is captured as data on the ground and submitted from there.</p>
-          <Shot label="" />
-
-          <div className="cs-subhead">Gave the manager a queue instead of an inbox</div>
-          <p>Open cases can be filtered by pin code and area, selected together and assigned to a verifier in one action, which also makes each one trackable afterwards. On submit the manager either sends it back with a remark, or approves — and approving generates the report with their signature and stamp already on it.</p>
-          <Shot label="" />
+          <img src="uploads/data_entry_optimize compressed.jpg" alt="Part 2 Documents submitted — pre-filled document list the verifier adds to" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
 
           <div className="cs-subhead">Answered the approver's questions upfront</div>
           <p>Watching approvers read, they were scanning six or seven pages for four or five answers — is the title clear, are the LSR provisions met, and a few more of that kind. I turned those into a short set of questions the verifier answers directly, and put the answers at the top of the approver's screen. The full report stays one click away.</p>
-          <Shot label="" />
+          <img src="uploads/conclusion compressed.jpg" alt="Part 11 Conclusion — the approver's key questions answered upfront" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
         </div>
 
-        {/* 07 — Alignment */}
-        <div className="cs-section" ref={refs.current[6]}>
-          <div className="cs-num">07 · Alignment</div>
+        {/* 06 — Alignment */}
+        <div className="cs-section" ref={refs.current[5]}>
+          <div className="cs-num">06 · Alignment</div>
           <h2>Getting everyone <em>on board</em></h2>
           <p>Fixing the format meant telling 510 vendors their report was changing. I put the two problems to the stakeholders first: your approvers can't build a habit because every report is ordered differently, and your verifiers spend so long typing that it pushes the case TAT out.</p>
           <p>Then the trade. Yes, the order is fixed now, but the typing drops by about 70% — because everything the CPA enters is carried forward. I walked the national legal manager, the branch legal manager and a verifier through the whole flow in Figma.</p>
-          <Shot label="" />
         </div>
 
-        {/* 08 — Impact */}
-        <div className="cs-section" ref={refs.current[7]}>
-          <div className="cs-num">08 · Impact</div>
+        {/* 07 — Impact */}
+        <div className="cs-section" ref={refs.current[6]}>
+          <div className="cs-num">07 · Impact</div>
           <h2><em>Impact</em></h2>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
             <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">Report turnaround (p75)</div></div>
@@ -2061,21 +2103,6 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
               <li>510 vendor licences avoided as the network grows</li>
             </ul>
           </div>
-          <div className="cs-quote">
-            <p>[   ]</p>
-            <span className="who">[   ]</span>
-          </div>
-        </div>
-
-        {/* 09 — Differently */}
-        <div className="cs-section" ref={refs.current[8]}>
-          <div className="cs-num">09 · Reflection</div>
-          <h2>What I'd <em>do differently</em></h2>
-          <div className="cs-numlist">
-            <div className="cs-numcard"><div className="n">01</div><h5>Start the research on day one, in parallel</h5><p>I shipped Phase 1 first and studied after. It worked, but the four problems that mattered most were sitting there the whole time — I could have been finding them while Phase 1 was in build.</p></div>
-            <div className="cs-numcard"><div className="n">02</div><h5>Get verifiers into the room</h5><p>The people whose work changed most were spoken for by their managers. Two or three verifiers in the review calls would have caught things earlier.</p></div>
-            <div className="cs-numcard"><div className="n">03</div><h5>Measure the format, not just the outcome</h5><p>I can show the turnaround moved. I can't yet show which sections still slow a verifier down, which is where the next cut would come from.</p></div>
-          </div>
         </div>
       </div>
     </div>
@@ -2093,7 +2120,7 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
     { key:'hero',    label:'Overview' },
     { key:'tldr',    label:'TL;DR' },
     { key:'before',  label:'The before' },
-    { key:'reframe', label:'Four problems → four goals' },
+    { key:'reframe', label:'The existing SFDC flow' },
     { key:'moves',   label:'Eight moves' },
     { key:'capture', label:'Field-first capture' },
     { key:'intel',   label:'The intelligence layer' },
@@ -2132,7 +2159,7 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
-          <div className="cs-meta-item">Year<strong>{project.year}</strong></div>
+          <div className="cs-meta-item">Timeline<strong>30 days · Sept 2022</strong></div>
           {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc">
@@ -2161,14 +2188,6 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
           <h1>Technical verification — <em>from a 60-field Excel to the field</em></h1>
           <p className="cs-lede">The technical valuation of pledged property ran as an email-and-Excel relay. I rebuilt it into a field-first mobile flow that auto-generates a signed, scored report and hands it straight to underwriting — deleting two entire manual "download-and-re-upload" legs.</p>
-          <div className="cs-meta-pills">
-            <span className="pill">Role<strong>{project.role}</strong></span>
-            <span className="pill">Team<strong>{project.team}</strong></span>
-            <span className="pill">Timeline<strong>[add — e.g. 8-wk discovery + design, Q_ 2025]</strong></span>
-            <span className="pill">Workstream<strong>Technical Verification, Parakh</strong></span>
-            <span className="pill">Company<strong>Piramal Capital</strong></span>
-            <span className="pill">Domain<strong>Field ops + vendor ecosystem</strong></span>
-          </div>
         </div>
 
         {/* 02 — TL;DR */}
@@ -2178,11 +2197,11 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-cols3">
             <div className="cs-tile">
               <h4>Problem</h4>
-              <p>A 60–70 field Excel was the "system." Reports were hand-typed, printed, physically signed and stamped, scanned, and re-uploaded — then a CPA re-keyed fields into Salesforce. Vendors were picked by word of mouth.</p>
+              <p>A 60–70 field Excel was the "system." Reports were hand-typed, printed, physically signed and stamped, scanned, and re-uploaded — then a CPA re-keyed fields into Salesforce.</p>
             </div>
             <div className="cs-tile">
               <h4>Approach</h4>
-              <p>Reuse every field that already exists, delete the physical detours, let the system decide the boring stuff (priority + routing), and move quality control upstream — as a structured mobile capture flow.</p>
+              <p>Reuse every field that already exists, delete the physical detours, let the system decide the boring stuff (case priority), and move quality control upstream — as a structured mobile capture flow.</p>
             </div>
             <div className="cs-tile">
               <h4>Impact</h4>
@@ -2211,33 +2230,35 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           <p style={{marginTop:16,fontSize:15,color:'var(--ink-3)'}}>Scroll it. Every verifier filled this by hand, back at a desk, from memory — the gap where errors crept in.</p>
         </div>
 
-        {/* 04 — Reframe */}
+        {/* 04 — The problems in the existing SFDC flow */}
         <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · Synthesis</div>
-          <h2>Four problems, <em>four goals</em></h2>
-          <p>Clustering the pain, four problems were doing the real damage. Everything I designed maps back to one of them.</p>
-          <div className="cs-cols2">
-            <div className="cs-tile"><h4>01 · Data re-entered, not reused</h4><p>Sales captured collateral details; verifiers rebuilt them in Excel; CPAs re-keyed them into Salesforce.<br/><em style={{color:'var(--ink)'}}>→ Reuse every piece of data that already exists.</em></p></div>
-            <div className="cs-tile"><h4>02 · Physical steps in a digital process</h4><p>Print, sign, stamp, scan, re-upload.<br/><em style={{color:'var(--ink)'}}>→ Delete the physical detours entirely.</em></p></div>
-            <div className="cs-tile"><h4>03 · No intelligence in routing</h4><p>Neither which case to do first, nor which vendor to trust.<br/><em style={{color:'var(--ink)'}}>→ Let the system decide priority + allocation from data.</em></p></div>
-            <div className="cs-tile"><h4>04 · No feedback signal</h4><p>Nothing measured vendor quality or flagged a weak report before credit saw it.<br/><em style={{color:'var(--ink)'}}>→ Move quality control upstream.</em></p></div>
+          <div className="cs-num">04 · The problems</div>
+          <h2>The existing <em>SFDC flow</em></h2>
+          <p>This is how technical verification ran inside Salesforce before the redesign — a long chain of handoffs stitched together over email. Mapping it end to end surfaced where it broke.</p>
+          <div className="tv-panel" style={{marginTop:32}}>
+            <div className="cap"><span className="tv-pill-b">Before</span> The existing SFDC flow, end to end</div>
+            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788798606683-0.png" alt="The existing SFDC technical-verification flow, mapped end to end" loading="lazy" style={{width:'100%',height:'auto',display:'block'}}/></div>
+          </div>
+          <div className="cs-cols3" style={{marginTop:32}}>
+            <div className="cs-tile"><h4>01 · Physical steps in a digital process</h4><p>Print, sign, stamp, scan, re-upload — a digital document taking a detour through a printer.</p></div>
+            <div className="cs-tile"><h4>02 · No prioritisation of cases</h4><p>No sense of which case to do first — verifiers picked from a raw queue with no ordering by urgency or value.</p></div>
+            <div className="cs-tile"><h4>03 · No feedback signal</h4><p>Nothing flagged a weak report before credit saw it — quality problems surfaced only after underwriting.</p></div>
           </div>
         </div>
 
         {/* 05 — Eight moves */}
         <div className="cs-section" ref={refs.current[4]}>
           <div className="cs-num">05 · The solution</div>
-          <h2>Eight connected <em>moves</em></h2>
+          <h2>Seven connected <em>moves</em></h2>
           <p>Roughly following a case's life — from the CPA opening it to the report landing in underwriting. The four highlighted below are the load-bearing ones.</p>
           <div className="cs-numlist">
             <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 01</div><h5>Smart case prioritisation — one button, not a list</h5><p>A single "Start a new case" ranks cases by loan amount and sanction-readiness, and surfaces the highest-priority one. Search overrides when Sales flags something urgent.</p></div>
             <div className="cs-numcard"><div className="n">Move 02</div><h5>Leverage the data Sales already captured</h5><p>The CPA screen pre-fills collateral details; the CPA only adds the 2–3 fields Sales can't know (Revenue Office, SRO name).</p></div>
             <div className="cs-numcard"><div className="n">Move 03</div><h5>Unified document handling</h5><p>One upload serves both legal and technical verification; documents can be marked for physical pickup where originals are needed.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 04</div><h5>One-click initiation + intelligent vendor routing</h5><p>The system suggests a vendor from the collateral's pin code and that vendor's measured performance on it — replacing word-of-mouth with a self-improving allocation engine.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 05</div><h5>Field-first mobile capture — killing the Excel</h5><p>The 60–70 Excel fields become native inputs grouped into the same sections. On "Start verification" the app auto-captures lat/long; photos and details are captured on location.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 06</div><h5>Auto-generated, digitally signed report</h5><p>On submit, the report builds itself from structured entry and the pre-stored sign &amp; stamp PNG is appended — deleting the download → print → sign → stamp → scan → re-upload leg.</p></div>
-            <div className="cs-numcard"><div className="n">Move 07</div><h5>Manager review — approve or send back</h5><p>Send-back returns the case to the verifier with a remark; the correction loop lives inside the system instead of over email.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 08</div><h5>Scoring engine + straight-to-credit hand-off</h5><p>The BTM sees a generated score, red flags and good areas with a recommend, and the structured data flows directly into the credit underwriting grid.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 04</div><h5>Field-first mobile capture — killing the Excel</h5><p>The 60–70 Excel fields become native inputs grouped into the same sections. On "Start verification" the app auto-captures lat/long; photos and details are captured on location.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 05</div><h5>Auto-generated, digitally signed report</h5><p>On submit, the report builds itself from structured entry and the pre-stored sign &amp; stamp PNG is appended — deleting the download → print → sign → stamp → scan → re-upload leg.</p></div>
+            <div className="cs-numcard"><div className="n">Move 06</div><h5>Manager review — approve or send back</h5><p>Send-back returns the case to the verifier with a remark; the correction loop lives inside the system instead of over email.</p></div>
+            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 07</div><h5>Scoring engine + straight-to-credit hand-off</h5><p>The BTM sees a generated score, red flags and good areas with a recommend, and the structured data flows directly into the credit underwriting grid.</p></div>
           </div>
         </div>
 
@@ -2286,14 +2307,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
 
           <div className="cs-subhead">Case prioritisation — one button, not a queue</div>
           <p>Instead of a raw queue that invites cherry-picking, one action surfaces the highest-priority case — ranked by loan value and sanction-readiness. A list is a decision-fatigue tax; a single prioritised action quietly enforces the business's order.</p>
-          <div style={{marginTop:16}}><span className="tv-startbtn"><span className="plus">+</span> Start a new case</span></div>
-
-          <div className="cs-subhead">Vendor routing — measured, not remembered</div>
-          <p>The system suggests a vendor from the collateral's pin code and that vendor's measured correctness and punctuality on it. Allocation gets smarter with every case — and this is the same quality signal that feeds scoring.</p>
-          <div className="tv-vlist">
-            <div className="tv-vrow top"><span className="rank">1</span><span className="vn">Meridian Valuers <small>Pin 560016 · 214 cases</small></span><span className="vm">98% correct<br/>1.4h avg TAT</span><span className="tv-pick">Suggested</span></div>
-            <div className="tv-vrow"><span className="rank">2</span><span className="vn">Ashwin Associates <small>Pin 560016 · 156 cases</small></span><span className="vm">94% correct<br/>2.1h avg TAT</span></div>
-            <div className="tv-vrow"><span className="rank">3</span><span className="vn">Sri Valuation Co. <small>Pin 560016 · 88 cases</small></span><span className="vm">89% correct<br/>3.6h avg TAT</span></div>
+          <div className="tv-panel" style={{marginTop:16}}>
+            <div className="cap"><span className="tv-pill-a">After</span> Up next — the single prioritised action</div>
+            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788801695405-0.png" alt="Up next for you — a single prioritised case surfaced with a Start Case action, ranked by TAT remaining, loan amount and processing risk" loading="lazy" style={{width:'100%',height:'auto',display:'block'}}/></div>
           </div>
 
           <div className="cs-subhead">BTM scoring — read the signal, not the whole report</div>
@@ -2322,7 +2338,6 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
               <tr><td>Report authoring</td><td className="dim">60–70 field Excel, by hand</td><td className="hi">Structured mobile fields, on-site</td></tr>
               <tr><td>Sign &amp; stamp</td><td className="dim">Print → sign → stamp → scan → upload</td><td className="hi">Pre-stored PNG auto-appended</td></tr>
               <tr><td>Geo proof</td><td className="dim">None / manual</td><td className="hi">Auto lat/long on "Start verification"</td></tr>
-              <tr><td>Vendor allocation</td><td className="dim">BTM's word of mouth</td><td className="hi">Data-driven by pin code + performance</td></tr>
               <tr><td>CPA → Salesforce</td><td className="dim">Manual download, extract, re-upload</td><td className="hi">Structured data flows to credit</td></tr>
               <tr><td>Prioritisation</td><td className="dim">None</td><td className="hi">Ranked by loan value + readiness</td></tr>
               <tr><td>Query &amp; rectification</td><td className="dim">Email + WhatsApp</td><td className="hi">In-system loops with remarks</td></tr>
@@ -2334,7 +2349,6 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
             <div className="cs-outcome"><div className="big"><em>2</em></div><div className="lab">Manual legs removed</div></div>
             <div className="cs-outcome"><div className="big"><em>[TAT]</em></div><div className="lab">Report TAT, before → after</div></div>
             <div className="cs-outcome"><div className="big"><em>[%]</em></div><div className="lab">Rework rate reduction</div></div>
-            <div className="cs-outcome"><div className="big"><em>[N]</em></div><div className="lab">Vendors on data-driven routing</div></div>
           </div>
           <div className="tv-note"><strong>Bracketed metrics are placeholders.</strong> Send me your real or projected numbers and I'll drop them in (labelled as targets if not yet measured).</div>
         </div>
@@ -2547,7 +2561,7 @@ const App = () => {
   const engine = useCanvasEngine();
   const [openCase, setOpenCase] = useState(null);
   const [activeSection, setActiveSection] = useState('hero');
-  const [showHint, setShowHint] = useState(true);
+  const [showHint, setShowHint] = useState(false);
   const [tweaksOpen, setTweaksOpen] = useState(false);
   const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
 
