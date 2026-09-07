@@ -27,8 +27,8 @@ function useCanvasEngine() {
     const el = stageRef.current;
     if (!el) return;
     if (!el.clientWidth) return;
-    const maxX = 2000, minX = -3400;
-    const maxY = 800, minY = -3200;
+    const maxX = 2200, minX = -3800;
+    const maxY = 800, minY = -8200;
     next.x = Math.min(maxX, Math.max(minX, next.x));
     next.y = Math.min(maxY, Math.max(minY, next.y));
     next.z = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next.z));
@@ -60,8 +60,16 @@ function useCanvasEngine() {
     const from = { ...tRef.current };
     const to = { x: nx, y: ny, z };
     const start = performance.now();
-    const dur = 900;
-    const ease = (u) => 1 - Math.pow(1 - u, 4);
+    const dist = Math.hypot(to.x - from.x, to.y - from.y);
+    // Distance-aware duration with gentle floor/ceiling
+    const dur = Math.max(650, Math.min(1400, 500 + dist * 0.45));
+    // Smooth in-out with a hint of settle — no sharp deceleration
+    const ease = (u) => {
+      // easeInOutQuint — symmetric, silky
+      return u < 0.5
+        ? 16 * u * u * u * u * u
+        : 1 - Math.pow(-2 * u + 2, 5) / 2;
+    };
     const step = (now) => {
       const u = Math.min(1, (now - start) / dur);
       const e = ease(u);
@@ -190,7 +198,7 @@ const App = () => {
   const engine = useCanvasEngine();
   const [openCase, setOpenCase] = useState(null);
   const [activeSection, setActiveSection] = useState('hero');
-  const [showHint, setShowHint] = useState(true);
+  const [showHint, setShowHint] = useState(false);
   const [tweaksOpen, setTweaksOpen] = useState(false);
   const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
 
@@ -227,28 +235,56 @@ const App = () => {
 
   // Snap-scroll: wheel/trackpad jumps to next/prev section
   const snapLock = useRef(false);
-  const snapIdx = useRef(0);
+  const wheelAccum = useRef(0);
+  const wheelIdleTimer = useRef(null);
+  const lastWheelDir = useRef(0);
   useEffect(() => {
     const el = engine.stageRef.current;
     if (!el) return;
+    const THRESHOLD = 60; // accumulated wheel delta before a snap fires
+    const COOLDOWN  = 700; // must be < panTo duration so next gesture can queue while settling
+
     const onWheelSnap = (e) => {
-      if (e.ctrlKey || e.metaKey) return; // let pinch-zoom through
-      if (openCase) return; // let case study scroll normally
+      if (e.ctrlKey || e.metaKey) return; // pinch-zoom
+      if (openCase) return;
       e.preventDefault();
+
+      const dy = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (dy === 0) return;
+
       if (snapLock.current) return;
-      const dir = (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX);
-      if (Math.abs(dir) < 8) return;
+
+      // Reset accumulation if direction reversed
+      if (lastWheelDir.current !== 0 && Math.sign(dy) !== lastWheelDir.current) {
+        wheelAccum.current = 0;
+      }
+      lastWheelDir.current = Math.sign(dy);
+      wheelAccum.current += dy;
+
+      // Reset accumulation after gesture idle (250ms with no wheel)
+      clearTimeout(wheelIdleTimer.current);
+      wheelIdleTimer.current = setTimeout(() => {
+        wheelAccum.current = 0;
+        lastWheelDir.current = 0;
+      }, 250);
+      if (Math.abs(wheelAccum.current) < THRESHOLD) return;
+
+      const dir = wheelAccum.current > 0 ? 1 : -1;
       const cur = SECTIONS.findIndex(s => s.id === activeSectionRef.current);
-      const next = Math.max(0, Math.min(SECTIONS.length - 1, cur + (dir > 0 ? 1 : -1)));
+      const next = Math.max(0, Math.min(SECTIONS.length - 1, cur + dir));
+      wheelAccum.current = 0;
       if (next === cur) return;
+
       snapLock.current = true;
-      snapIdx.current = next;
       const s = SECTIONS[next];
       engine.panTo(s.center.x, s.center.y, computeFitZoom());
-      setTimeout(() => { snapLock.current = false; }, 950);
+      setTimeout(() => { snapLock.current = false; }, COOLDOWN);
     };
     el.addEventListener('wheel', onWheelSnap, { passive: false });
-    return () => el.removeEventListener('wheel', onWheelSnap);
+    return () => {
+      el.removeEventListener('wheel', onWheelSnap);
+      clearTimeout(wheelIdleTimer.current);
+    };
   }, [openCase, computeFitZoom]); // eslint-disable-line
 
   // Touch swipe snap
@@ -372,7 +408,7 @@ const App = () => {
     if (!openCase) return;
     const idx = PROJECTS.findIndex(p => p.id === openCase.id);
     setOpenCase(PROJECTS[(idx + 1) % PROJECTS.length]);
-    document.querySelector('.cs-panel')?.scrollTo({ top: 0, behavior: 'smooth' });
+    // scroll handled inside CaseStudy component
   };
 
   const jumpTo = (sid) => {
@@ -382,24 +418,19 @@ const App = () => {
 
   const renderIsland = (it) => {
     const common = { key: it.id, className: 'island', style: { left: it.x, top: it.y } };
-    const withCoord = (node) => (
-      <div {...common}>
-        <div className="coord">{it.kind.toUpperCase()} · [{it.x}, {it.y}]</div>
-        {node}
-      </div>
-    );
+    const wrap = (node) => <div {...common}>{node}</div>;
     switch (it.kind) {
-      case 'hero':     return withCoord(<Hero/>);
-      case 'section':  return withCoord(<SectionHead num={it.num} h1={it.h1} em={it.em}/>);
-      case 'about':    return withCoord(<About/>);
-      case 'sticky':   return <div {...common}><Sticky/></div>;
-      case 'stats':    return withCoord(<Stats/>);
-      case 'photo':    return <div {...common}><Photo/></div>;
-      case 'tools':    return withCoord(<Tools/>);
-      case 'project':  return withCoord(<div data-interactive><ProjectCard project={it.project} onOpen={openProject} /></div>);
-      case 'timeline': return withCoord(<Timeline/>);
-      case 'contact':  return <div {...common} data-interactive><div className="coord">CONTACT · [{it.x}, {it.y}]</div><Contact/></div>;
-      case 'marquee':  return <div {...common}><Marquee text={it.text}/></div>;
+      case 'hero':     return wrap(<Hero/>);
+      case 'section':  return wrap(<SectionHead num={it.num} h1={it.h1} em={it.em}/>);
+      case 'about':    return wrap(<About/>);
+      case 'sticky':   return wrap(<Sticky/>);
+      case 'stats':    return wrap(<Stats/>);
+      case 'photo':    return wrap(<Photo/>);
+      case 'tools':    return wrap(<Tools/>);
+      case 'project':  return <div {...common} data-interactive><ProjectCard project={it.project} onOpen={openProject} compact={it.compact} /></div>;
+      case 'timeline': return wrap(<Timeline/>);
+      case 'contact':  return <div {...common} data-interactive><Contact/></div>;
+      case 'marquee':  return wrap(<Marquee text={it.text}/>);
       default: return null;
     }
   };
@@ -445,7 +476,7 @@ const App = () => {
 
       <div className="topbar">
         <div className="brand">
-          <span className="bdot"/> Chintan Jat — Infinite Canvas
+          <span className="bdot"/> Chintan Jat · designing in the void
         </div>
         <div className="section-jumps">
           {SECTIONS.map((s, i) => (
@@ -458,6 +489,17 @@ const App = () => {
             </button>
           ))}
         </div>
+        <a
+          className="resume-btn"
+          href="uploads/Chintanjat_cv-3a0f1e72.pdf"
+          download="Chintan-Jat-Resume.pdf"
+          target="_blank"
+          rel="noopener"
+          title="Download resume (PDF)"
+        >
+          <span className="rdown">↓</span>
+          <span><span className="rlabel-full">Download </span>Resume</span>
+        </a>
       </div>
 
       <button
@@ -468,11 +510,11 @@ const App = () => {
         style={{display: 'none'}}
       >⚙</button>
 
-      {tweaksOpen && (
+      {tweaksOpen && false && (
         <div className="tweaks-panel" data-interactive>
           <header>
             Tweaks
-            <span style={{cursor:'pointer', fontSize:14}} onClick={() => setTweaksOpen(false)}>×</span>
+            <span style={{cursor:'pointer', fontSize:17}} onClick={() => setTweaksOpen(false)}>×</span>
           </header>
           <div className="tw-body">
             <div className="tw-row">
@@ -524,12 +566,16 @@ const App = () => {
       <Minimap t={engine.t} stageRef={engine.stageRef} islands={ISLANDS} onJump={(x,y) => engine.panTo(x,y)}/>
 
       <div className={`hint ${!showHint ? 'hidden' : ''}`}>
-        <span className="hk">scroll</span><span>to jump sections</span>
-        <span className="hk">⌘/ctrl+scroll</span><span>to zoom</span>
-        <span className="hk">1–5</span><span>to jump directly</span>
+        <span className="hk">scroll</span><span>to move between sections</span>
+        <span className="hk">⌘/ctrl+scroll</span><span>to zoom the canvas</span>
+        <span className="hk">1–5</span><span>to teleport</span>
       </div>
 
-      {openCase && <CaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>}
+      {openCase && (openCase.id === 'tech'
+        ? <TechCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
+        : openCase.extended
+          ? <ExtendedCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
+          : <CaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>)}
     </>
   );
 };
@@ -538,7 +584,7 @@ const App = () => {
 const Minimap = ({ t, stageRef, islands, onJump }) => {
   const W = 220, H = 140;
   // canvas world bounds (approx)
-  const bounds = { x: -500, y: 0, w: 3200, h: 3200 };
+  const bounds = { x: -500, y: 0, w: 3200, h: 8400 };
   const scale = Math.min((W - 20) / bounds.w, (H - 20) / bounds.h);
   const ox = (W - bounds.w * scale) / 2 - bounds.x * scale;
   const oy = (H - bounds.h * scale) / 2 - bounds.y * scale;
@@ -566,13 +612,13 @@ const Minimap = ({ t, stageRef, islands, onJump }) => {
       const y = (e.clientY - rect.top - oy) / scale;
       onJump(x, y);
     }}>
-      <div className="mm-label">Canvas Map</div>
+      <div className="mm-label">You are here</div>
       <div className="mm-canvas">
         {islands.map(it => {
           const sizes = {
             hero: [820, 360], section: [440, 150], about: [520, 260],
             sticky: [260, 140], stats: [420, 160], photo: [280, 340],
-            tools: [400, 160], project: [460, 500], timeline: [560, 380],
+            tools: [400, 160], project: [310, 445], timeline: [560, 380],
             contact: [620, 380], marquee: [1200, 220],
           };
           const [w, h] = sizes[it.kind] || [200, 100];
@@ -596,14 +642,57 @@ const Minimap = ({ t, stageRef, islands, onJump }) => {
 /* Connectors — dashed lines between work cards */
 const Connectors = () => (
   <svg className="connectors" width="3500" height="3500" viewBox="0 0 3500 3500">
-    {/* hero to about */}
-    <path d="M 610 480 Q 500 700 500 900" />
-    {/* about cluster to work */}
-    <path d="M 1420 1250 Q 1600 1200 1760 1150" />
-    <path d="M 1890 1580 Q 2100 1700 2250 1780" />
-    {/* work to contact */}
-    <path d="M 1930 2300 Q 1800 2400 1600 2500" />
+    {/* hero → about */}
+    <path d="M 610 520 Q 480 1000 360 1560" />
+    {/* about → work */}
+    <path d="M 760 2580 Q 1200 2900 1760 3260" />
+    {/* work strip → exp */}
+    <path d="M 2400 3960 Q 1600 4800 760 5660" />
+    {/* exp → contact */}
+    <path d="M 820 6500 Q 1280 6820 1720 7060" />
   </svg>
 );
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+/* ---------- Password gate ---------- */
+const Gate = ({ onUnlock }) => {
+  const [val, setVal] = React.useState('');
+  const [err, setErr] = React.useState('');
+  const submit = (e) => {
+    e.preventDefault();
+    if (val === 'designinginthevoid') {
+      try { sessionStorage.setItem('cj_unlocked', '1'); } catch (_) {}
+      onUnlock();
+    } else {
+      setErr('Incorrect password. Try again.');
+    }
+  };
+  return (
+    <div className="gate">
+      <div className="gate-card">
+        <div className="gate-eyebrow"><span className="bdot"/> Chintan Jat · Portfolio</div>
+        <h1>Enter the <em>canvas</em></h1>
+        <p>This portfolio is private. Enter the password to continue.</p>
+        <form onSubmit={submit}>
+          <input type="password" value={val} autoFocus placeholder="Password"
+            onChange={(e) => { setVal(e.target.value); setErr(''); }} />
+          <div className="err">{err}</div>
+          <button type="submit">Unlock</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Set GATE_ENABLED = true to bring the password screen back.
+const GATE_ENABLED = false;
+
+const Root = () => {
+  const [unlocked, setUnlocked] = React.useState(() => {
+    if (!GATE_ENABLED) return true;
+    try { return sessionStorage.getItem('cj_unlocked') === '1'; } catch (_) { return false; }
+  });
+  return unlocked ? <App/> : <Gate onUnlock={() => setUnlocked(true)}/>;
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Root/>);
+
