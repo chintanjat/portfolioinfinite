@@ -38,14 +38,54 @@ const PROJECTS = [
 
 
 const EXPERIENCE = [
-  { year: 'May 2024 — Now',  role: 'UX lead — credit',        co: 'Piramal Finance', note: 'Scaling AI adoption in credit decisioning from 13% → 67%; institutionalizing MVP scoping, design systems and coded prototypes.' },
-  { year: 'May 2023 — Apr 2024', role: 'Senior UX designer',  co: 'Piramal Finance', note: 'Shipped Credit Central (SFDC sunset, ₹10 Cr saved) and Parakh legal verification (TAT −70%).' },
-  { year: 'Jan 2022 — Apr 2023', role: 'UX designer',         co: 'Piramal Finance', note: 'Cross-persona workflows across CPA / Legal / Tech; loan TAT 5–6 days → 2 days. Designed Project Vaani CRM.' },
-  { year: 'Mar 2021 — Jan 2022', role: 'Sr. product designer', co: 'Vahak',           note: 'India\'s largest transport marketplace — dashboard for 1M users, retention-first landing pages.' },
-  { year: 'May 2018 — Feb 2021', role: 'UX / UI designer',    co: 'Ansh Enterprises', note: 'Insurance agent portal, bank economic research desk, shopping and services apps.' },
-  { year: 'Aug 2017 — May 2018', role: 'UX / UI designer',    co: 'Pandit Ventures',  note: 'Astrology mobile app + high-converting landing pages via Unbounce and hand-coded HTML/CSS.' },
-  { year: 'Sep 2014 — Nov 2016', role: 'UX / UI designer',    co: 'AppsOnRoll TechStudio', note: 'End-to-end product design of the All Deals app — UX, UI, illustration and brand.' },
-  { year: '2014',                 role: 'B.E., Computer Engineering', co: 'Gujarat Technological University', note: 'Foundation in engineering before pivoting fully into design.' },
+  {
+    year: 'Jun 2024 — Now',
+    role: 'UX lead — credit',
+    co: 'Piramal Finance',
+    note: 'Scaling AI adoption in credit decisioning from 13% → 67%; institutionalizing MVP scoping, design systems and coded prototypes.',
+  },
+  {
+    year: 'Jun 2023 — May 2024',
+    role: 'Senior UX designer',
+    co: 'Piramal Finance',
+    note: 'Shipped Credit Central (SFDC sunset, ₹10 Cr saved) and Parakh legal verification, removing about 70% of verifier typing.',
+  },
+  {
+    year: 'Feb 2022 — May 2023',
+    role: 'UX designer',
+    co: 'Piramal Finance',
+    note: 'Cross-persona workflows across CPA / Legal / Tech; loan TAT 5–6 days → 2 days. Designed Project Vaani CRM.',
+  },
+  {
+    year: 'Apr 2021 — Feb 2022',
+    role: 'Sr. product designer',
+    co: 'Vahak',
+    note: 'India\'s largest transport marketplace — dashboard for 1M users, retention-first landing pages.',
+  },
+  {
+    year: 'Jun 2018 — Mar 2021',
+    role: 'UX / UI designer',
+    co: 'Ansh Enterprises',
+    note: 'Insurance agent portal, bank economic research desk, shopping and services apps.',
+  },
+  {
+    year: 'Sep 2017 — Jun 2018',
+    role: 'UX / UI designer',
+    co: 'Pandit Ventures',
+    note: 'Astrology mobile app + high-converting landing pages via Unbounce and hand-coded HTML/CSS.',
+  },
+  {
+    year: 'Oct 2014 — Dec 2016',
+    role: 'UX / UI designer',
+    co: 'AppsOnRoll TechStudio',
+    note: 'End-to-end product design of the All Deals app — UX, UI, illustration and brand.',
+  },
+  {
+    year: '2014',
+    role: 'B.E., Computer Engineering',
+    co: 'Gujarat Technological University',
+    note: 'Foundation in engineering before pivoting fully into design.',
+  },
 ];
 
 /* Island positions on the canvas — coordinates on an infinite plane. */
