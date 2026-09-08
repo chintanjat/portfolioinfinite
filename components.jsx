@@ -1,5 +1,50 @@
 /* Island content components — presentational only. */
 
+const useDialogAccessibility = (onClose) => {
+  const dialogRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const dialog = dialogRef.current;
+    const previouslyFocused = document.activeElement;
+    if (!dialog) return;
+
+    document.body.classList.add('dialog-open');
+    dialog.querySelector('[data-dialog-close]')?.focus();
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusable = Array.from(dialog.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter((element) => !element.hasAttribute('hidden') && element.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    dialog.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.classList.remove('dialog-open');
+      dialog.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [onClose]);
+
+  return dialogRef;
+};
+
 const Hero = () => (
   <div className="card hero">
     <h1>
@@ -8,11 +53,11 @@ const Hero = () => (
       <span style={{fontFamily:'var(--f-mono)',fontSize:18,verticalAlign:'super',marginLeft:12,color:'var(--ink-3)',letterSpacing:'0.1em'}}></span>
     </h1>
     <p className="tag">
-      Designer living on an <em>infinite canvas</em> — sketching quiet software in the void.
+      Product designer focused on <em>complex workflows</em> in lending and financial services.
     </p>
     <div className="meta-row">
       <div>Based in<strong>Bengaluru, India</strong></div>
-      <div>Total Experience<strong>11+ years</strong></div>
+      <div>Total experience<strong>11+ years</strong></div>
     </div>
   </div>
 );
@@ -27,23 +72,23 @@ const SectionHead = ({num, h1, em}) => (
 
 const About = () => (
   <div className="card about">
-    <h3>The canvas is where I live.</h3>
+    <h3>I design software for people doing complex work.</h3>
     <p>
-      I'm Chintan — a designer who lives on blank screens and empty frames. Every product I work on starts the same way: nothing. Then slowly, through research and a lot of staring, something real takes shape.
+      I'm Chintan, a product designer based in Bengaluru. I work mainly on lending products, where a small design decision can affect branch teams, reviewers and people working in the field.
     </p>
     <p>
-      Most of my time is spent with fintech ops teams, legal reviewers and field workers — people who use software all day and hate most of it. I try to make things they actually enjoy using. The work is quiet. That's the point.
+      I spend time understanding how the work happens before changing the screen. That often means following a case through spreadsheets, calls, messages and forms, then removing the steps that people should not have to repeat.
     </p>
     <p>
-      This whole portfolio is a canvas too. Scroll to move between sections, or press <span className="kbd">1–5</span> to jump anywhere.
+      The two projects here show that process from research to the final workflow. Scroll through the canvas, or use <span className="kbd">1–5</span> to move between sections.
     </p>
   </div>
 );
 
 const Sticky = () => (
   <div className="sticky">
-    "An empty canvas isn't nothing — it's everything that hasn't happened yet."
-    <span className="attrib">— Note to self, always</span>
+    “Start with the work people are doing, then decide what the screen needs.”
+    <span className="attrib">How I approach product design</span>
   </div>
 );
 
@@ -55,11 +100,11 @@ const Stats = () => (
     </div>
     <div>
       <div className="s-num">4<em>yrs</em></div>
-      <div className="s-lab">Deep in fintech</div>
+      <div className="s-lab">Years in fintech</div>
     </div>
     <div>
       <div className="s-num">10k<em>+</em></div>
-      <div className="s-lab">People use what I make daily</div>
+      <div className="s-lab">Daily users across shipped products</div>
     </div>
     <div>
       <div className="s-num"><em>2</em></div>
@@ -70,39 +115,39 @@ const Stats = () => (
 
 const Photo = () => (
   <div className="card photo-frame">
-    <div className="ph"><img src="uploads/pasted-1788262895975-0.jpeg" alt="Chintan Jat" loading="lazy"/></div>
-    <div className="caption">Chintan, mid-blank-canvas</div>
+    <div className="ph"><img src="uploads/pasted-1788262895975-0.jpeg" width="1080" height="1920" alt="Portrait of Chintan Jat" loading="lazy" decoding="async"/></div>
+    <div className="caption">Chintan Jat, product designer</div>
   </div>
 );
 
 const Tools = () => (
   <div className="card tools">
-    <h4>What I draw with</h4>
+    <h3>Tools I use</h3>
     <ul>
-      <li className="accent">Figma</li>
+      <li>Figma</li>
       <li>Notion</li>
       <li>FigJam</li>
-      <li className="accent">Claude</li>
+      <li>Claude</li>
       <li>Make</li>
     </ul>
   </div>
 );
 
 const ProjectCard = ({ project, onOpen, compact }) => (
-  <div className={`card project${compact ? ' compact' : ''}`} onClick={() => onOpen(project.id)}>
+  <button type="button" className={`card project${compact ? ' compact' : ''}`} onClick={() => onOpen(project.id)} aria-haspopup="dialog" aria-label={`Read case study: ${project.title}`}>
     <div className="thumb">
       <div className="ph">{project.thumbLabel}</div>
-      <div className="badge">{project.code} · {project.name}</div>
+      <div className="badge">{project.name}</div>
     </div>
     <div className="body">
       <div className="tags">
         {project.tags.map(t => <span key={t} className="tag">{t}</span>)}
       </div>
-      <h4>{project.title.split(',')[0]}, <em>{project.title.split(',').slice(1).join(',').trim()}</em></h4>
+      <h3>{project.title}</h3>
       <p className="desc">{project.summary}</p>
-      <span className="cta">Read case study <span>→</span></span>
+      <span className="cta">Read case study <span aria-hidden="true">→</span></span>
     </div>
-  </div>
+  </button>
 );
 
 const Timeline = () => {
@@ -143,19 +188,19 @@ const Contact = () => (
     <div className="contact-links">
       <a className="clink" href="mailto:jatchintan@gmail.com">
         <span><span className="label">Email</span>jatchintan@gmail.com</span>
-        <span className="arrow">↗</span>
+        <span className="arrow" aria-hidden="true">↗</span>
       </a>
       <a className="clink" href="tel:+919033495724">
         <span><span className="label">Phone</span>+91 90334 95724</span>
-        <span className="arrow">↗</span>
+        <span className="arrow" aria-hidden="true">↗</span>
       </a>
       <a className="clink" href="https://linkedin.com/in/chintanjat" target="_blank" rel="noopener">
         <span><span className="label">LinkedIn</span>linkedin.com/in/chintanjat</span>
-        <span className="arrow">↗</span>
+        <span className="arrow" aria-hidden="true">↗</span>
       </a>
       <a className="clink" href="https://chintanjat.com" target="_blank" rel="noopener">
         <span><span className="label">Website</span>chintanjat.com</span>
-        <span className="arrow">↗</span>
+        <span className="arrow" aria-hidden="true">↗</span>
       </a>
     </div>
   </div>
@@ -169,15 +214,10 @@ const Marquee = ({ text }) => (
 
 const CaseStudy = ({ project, onClose, onNext }) => {
   const contentRef = React.useRef(null);
+  const dialogRef = useDialogAccessibility(onClose);
   const sectionRefs = [React.useRef(null), React.useRef(null), React.useRef(null), React.useRef(null)];
   const [progress, setProgress] = React.useState(0);
   const [activeSection, setActiveSection] = React.useState(0);
-
-  React.useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
 
   const handleScroll = () => {
     const el = contentRef.current;
@@ -208,12 +248,11 @@ const CaseStudy = ({ project, onClose, onNext }) => {
   const titleEm = titleParts.slice(1).join(',').trim();
 
   return (
-    <div className="cs-fullscreen">
+    <div className="cs-fullscreen" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={`case-title-${project.id}`}>
       {/* Sidebar */}
       <div className="cs-sidebar">
-        <button className="cs-back" onClick={onClose}>← Back to canvas</button>
-        <div className="cs-sidebar-num">{project.code} · {project.name}</div>
-        <h2>{titleMain}, <em>{titleEm}</em></h2>
+        <button type="button" className="cs-back" onClick={onClose} data-dialog-close>← Back to canvas</button>
+        <h2 id={`case-title-${project.id}`}>{titleMain}, <em>{titleEm}</em></h2>
         <div className="cs-meta-list">
           <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
@@ -223,30 +262,26 @@ const CaseStudy = ({ project, onClose, onNext }) => {
         </div>
         <div className="cs-toc">
           {tocLabels.map((label, i) => (
-            <button key={i}
+            <button type="button" key={i}
               className={`cs-toc-btn ${activeSection === i ? 'active' : ''}`}
+              aria-current={activeSection === i ? 'location' : undefined}
               onClick={() => scrollTo(sectionRefs[i])}>
               {String(i + 1).padStart(2, '0')} · {label}
             </button>
           ))}
         </div>
         <div className="cs-proj-nav">
-          <button className="cs-proj-btn" onClick={handleNext}>Next project →</button>
+          <button type="button" className="cs-proj-btn" onClick={handleNext}>Next project →</button>
         </div>
       </div>
 
       {/* Scrollable content */}
-      <div className="cs-content" ref={contentRef} onScroll={handleScroll}>
-        <div className="cs-progress">
+      <div className="cs-content" ref={contentRef} onScroll={handleScroll} tabIndex="0" aria-label={`${project.name} case study content`}>
+        <div className="cs-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(progress)}>
           <div className="cs-progress-fill" style={{width: `${progress}%`}} />
         </div>
 
         <div className="cs-hero">
-          <div className="cs-eyebrow">
-            <span>{project.audience}</span>
-            <span>{project.year}</span>
-            <span>{project.tags.join(' · ')}</span>
-          </div>
           <h1>{titleMain}, <em>{titleEm}</em></h1>
           <p className="cs-lede">{project.lede}</p>
         </div>
@@ -255,7 +290,7 @@ const CaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-num">Layer 01 · The blank canvas</div>
           <h2>What was <em>missing</em></h2>
           <p>{project.problem}</p>
-          <div className="cs-ph short">PROBLEM DIAGRAM · PLACEHOLDER</div>
+          <div className="cs-ph short">Problem diagram · Placeholder</div>
         </div>
 
         <div className="cs-section" ref={sectionRefs[1]}>
@@ -277,10 +312,10 @@ const CaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-num">Layer 03 · Drawing</div>
           <h2>What we <em>built</em></h2>
           <p>{project.design}</p>
-          <div className="cs-ph tall">HERO DESIGN · PLACEHOLDER</div>
+          <div className="cs-ph tall">Hero design · Placeholder</div>
           <div className="cs-grid2">
-            <div className="cs-ph short" style={{margin:0}}>FLOW 01</div>
-            <div className="cs-ph short" style={{margin:0}}>FLOW 02</div>
+            <div className="cs-ph short" style={{margin:0}}>Flow 01</div>
+            <div className="cs-ph short" style={{margin:0}}>Flow 02</div>
           </div>
         </div>
 
@@ -375,7 +410,7 @@ const FlowDiagram = ({ variant }) => {
     return (
       <g>
         <rect x={lx - w / 2} y={ly - h / 2} width={w} height={h} fill={c.panel} />
-        <text x={lx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15" fill="#3a3a3a" fontFamily="'Geist', sans-serif">
+        <text x={lx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15" fill="#3a3a3a" fontFamily="'Inter Tight', sans-serif">
           {arr.map((s, i) => <tspan key={i} x={lx} dy={i === 0 ? 0 : 17}>{s}</tspan>)}
         </text>
       </g>
@@ -383,8 +418,8 @@ const FlowDiagram = ({ variant }) => {
   };
   return (
     <div style={{ position: 'relative', background: c.panel, border: '1px solid ' + c.border, borderRadius: 16, padding: '44px 26px 24px', marginTop: 16 }}>
-      <span style={{ position: 'absolute', top: 14, left: 16, fontFamily: "'Geist', sans-serif", fontSize: 14, fontWeight: 500, color: c.badgeFg, background: c.badgeBg, padding: '3px 11px', borderRadius: 6 }}>{c.label}</span>
-      <svg viewBox={c.vb} style={{ width: '100%', height: 'auto', display: 'block' }}>
+      <span style={{ position: 'absolute', top: 14, left: 16, fontFamily: "'Inter Tight', sans-serif", fontSize: 14, fontWeight: 400, color: c.badgeFg, background: c.badgeBg, padding: '3px 11px', borderRadius: 6 }}>{c.label}</span>
+      <svg viewBox={c.vb} role="img" aria-label={`${c.label} legal verification workflow diagram`} style={{ width: '100%', height: 'auto', display: 'block' }}>
         <defs>
           <marker id={mk} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill={STROKE} /></marker>
         </defs>
@@ -392,7 +427,7 @@ const FlowDiagram = ({ variant }) => {
         {c.nodes.map((n, i) => {
           const start = n.cy - ((n.lines.length - 1) * LH) / 2;
           const txt = (
-            <text x={n.cx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15.5" fill={TXT} fontFamily="'Geist', sans-serif">
+            <text x={n.cx} y={start} textAnchor="middle" dominantBaseline="middle" fontSize="15.5" fill={TXT} fontFamily="'Inter Tight', sans-serif">
               {n.lines.map((ln, li) => <tspan key={li} x={n.cx} dy={li === 0 ? 0 : LH}>{ln}</tspan>)}
             </text>
           );
@@ -411,6 +446,7 @@ const FlowDiagram = ({ variant }) => {
 
 const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   const contentRef = React.useRef(null);
+  const dialogRef = useDialogAccessibility(onClose);
   const [progress, setProgress] = React.useState(0);
   const [active, setActive] = React.useState(0);
 
@@ -424,12 +460,6 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
     { key:'impact',  label:'Impact' },
   ], []);
   const refs = React.useRef(sections.map(() => React.createRef()));
-
-  React.useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
 
   const onScroll = () => {
     const el = contentRef.current; if (!el) return;
@@ -452,46 +482,41 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   };
 
   return (
-    <div className="cs-fullscreen">
+    <div className="cs-fullscreen" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={`case-title-${project.id}`}>
       <div className="cs-sidebar">
-        <button className="cs-back" onClick={onClose}>← Back to canvas</button>
-        <div className="cs-sidebar-num">{project.code} · {project.name}</div>
-        <h2>Piramal Parakh, <em>legal verification redesign</em></h2>
+        <button type="button" className="cs-back" onClick={onClose} data-dialog-close>← Back to canvas</button>
+        <h2 id={`case-title-${project.id}`}>Legal verification redesign</h2>
         <div className="cs-meta-list">
           <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
-          <div className="cs-meta-item">Timeline<strong>20 days · Aug 2022</strong></div>
+          <div className="cs-meta-item">Timeline<strong>{project.duration} · {project.year}</strong></div>
           {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc" style={{maxHeight:'42vh',overflowY:'auto'}}>
           {sections.map((s, i) => (
-            <button key={s.key}
+            <button type="button" key={s.key}
               className={`cs-toc-btn ${active === i ? 'active' : ''}`}
+              aria-current={active === i ? 'location' : undefined}
               onClick={() => scrollTo(i)}>
               {String(i+1).padStart(2,'0')} · {s.label}
             </button>
           ))}
         </div>
         <div className="cs-proj-nav">
-          <button className="cs-proj-btn" onClick={handleNext}>Next project →</button>
+          <button type="button" className="cs-proj-btn" onClick={handleNext}>Next project →</button>
         </div>
       </div>
 
-      <div className="cs-content" ref={contentRef} onScroll={onScroll}>
-        <div className="cs-progress"><div className="cs-progress-fill" style={{width:`${progress}%`}}/></div>
+      <div className="cs-content" ref={contentRef} onScroll={onScroll} tabIndex="0" aria-label={`${project.name} case study content`}>
+        <div className="cs-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(progress)}><div className="cs-progress-fill" style={{width:`${progress}%`}}/></div>
 
         {/* 01 — Hero */}
         <div className="cs-hero" ref={refs.current[0]}>
-          <div className="cs-eyebrow">
-            <span>{project.audience}</span>
-            <span>{project.year}</span>
-            <span>{project.tags.join(' · ')}</span>
-          </div>
-          <h1>Piramal Parakh — <em>from 3 days to 2 hours</em></h1>
-          <p className="cs-lede">Redesigning legal verification for India's lending industry as a solo IC across 400+ branches and 510 external advocates.</p>
+          <h1>Legal verification, <em>from report creation to approval</em></h1>
+          <p className="cs-lede">I redesigned how external advocates complete legal reports and how branch teams review them across three roles.</p>
           <div className="cs-macbook-stage">
-            <img className="cs-hero-img" src="uploads/legal-verification-hero.jpg" alt="Parakh Collateral Sanctions — Legal Scrutiny Report approver view shown on a MacBook" loading="lazy"/>
+            <img className="cs-hero-img" src="uploads/legal-verification-hero.jpg" width="1406" height="1119" alt="Parakh Collateral Sanctions — Legal Scrutiny Report approver view shown on a MacBook" decoding="async"/>
           </div>
         </div>
 
@@ -510,8 +535,8 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <p>The workflow itself was clearly broken, and I could see how without any study. So I redrew the path a case takes — where the report is written, how it gets signed, who moves it along — and handed it to the developers straight away.</p>
 
           <div className="cs-subhead">The workflow, before and after</div>
-          <img src="uploads/pasted-1788718640538-0.png" alt="Before — the paper-and-inbox legal-verification relay" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:16}}/>
-          <img src="uploads/pasted-1788718650932-0.png" alt="After — one case, one thread, in-platform" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:20}}/>
+          <img src="uploads/pasted-1788718640538-0.png" width="4416" height="1970" alt="Before — the paper-and-inbox legal-verification relay" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:16}}/>
+          <img src="uploads/pasted-1788718650932-0.png" width="3514" height="1668" alt="After — one case, one thread, in-platform" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:20}}/>
           <p style={{marginTop:20}}>With that, CPA and Approver Salesforce licences could be sunset.</p>
 
           <div className="cs-subhead">What it still didn't fix</div>
@@ -526,7 +551,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <p>Phase 1 was built from a walkthrough. Before Phase 2 I went and watched the work itself: I sat with national legal heads and branch approvers while they read live reports and made a call, watched external verifiers fill their own Word files section by section, and pulled 15–20 real reports from different vendors to read side by side.</p>
           <p>What I found on the ground wasn't the problem I'd been handed. The brief was "rebuild the workflow." The work pointed somewhere else entirely — at the report itself, and how much of it was people re-doing work that had already been done.</p>
 
-          <img src="uploads/Frame 12 compressed.jpg" alt="Legal approver working at a whiteboard, beside a spread of vendor reports in inconsistent formats from different agencies" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8,marginBottom:4}}/>
+          <img src="uploads/Frame 12 compressed.jpg" width="1148" height="646" alt="Legal approver working at a whiteboard, beside a spread of vendor reports in inconsistent formats from different agencies" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8,marginBottom:4}}/>
 
           <div className="cs-cols2">
             <div className="cs-tile">
@@ -562,15 +587,15 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
 
           <div className="cs-subhead">Fixed the order of the sections</div>
           <p>Across the reports I read, the sections were jumbled — B sitting near E, D near A. I settled one order with the national heads and approvers and built it into the screen, the same for every vendor.</p>
-          <img src="uploads/section_order compressed.jpg" alt="Report with a fixed, ordered list of sections — Part 1 Basic details through Part 7" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
+          <img src="uploads/section_order compressed.jpg" width="1148" height="646" alt="Report with a fixed, ordered list of sections — Part 1 Basic details through Part 7" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
 
           <div className="cs-subhead">Cut the entry to what only the verifier knows</div>
           <p>Most of the property and collateral detail in the report had already been entered upstream by the CPA. For each section I separated what the system already knows — from the CPA's entry, the transaction type and the property type — from what only the verifier can find on site. The first is shown to them. The second is all they fill.</p>
-          <img src="uploads/data_entry_optimize compressed.jpg" alt="Part 2 Documents submitted — pre-filled document list the verifier adds to" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
+          <img src="uploads/data_entry_optimize compressed.jpg" width="1148" height="646" alt="Part 2 Documents submitted — pre-filled document list the verifier adds to" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
 
           <div className="cs-subhead">Answered the approver's questions upfront</div>
           <p>Watching approvers read, they were scanning six or seven pages for four or five answers — is the title clear, are the LSR provisions met, and a few more of that kind. I turned those into a short set of questions the verifier answers directly, and put the answers at the top of the approver's screen. The full report stays one click away.</p>
-          <img src="uploads/conclusion compressed.jpg" alt="Part 11 Conclusion — the approver's key questions answered upfront" loading="lazy" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
+          <img src="uploads/conclusion compressed.jpg" width="1148" height="646" alt="Part 11 Conclusion — the approver's key questions answered upfront" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
         </div>
 
         {/* 06 — Alignment */}
@@ -610,30 +635,24 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
   );
 };
 
-/* ---------- Technical Verification: extended case study (8 sections) ---------- */
+/* ---------- Technical Verification: extended case study (7 sections) ---------- */
 
 const TechCaseStudy = ({ project, onClose, onNext }) => {
   const contentRef = React.useRef(null);
+  const dialogRef = useDialogAccessibility(onClose);
   const [progress, setProgress] = React.useState(0);
   const [active, setActive] = React.useState(0);
 
   const sections = React.useMemo(() => [
     { key:'hero',    label:'Overview' },
-    { key:'tldr',    label:'TL;DR' },
     { key:'before',  label:'The before' },
-    { key:'reframe', label:'The existing SFDC flow' },
-    { key:'moves',   label:'Eight moves' },
-    { key:'capture', label:'Field-first capture' },
-    { key:'intel',   label:'The intelligence layer' },
-    { key:'impact',  label:'Before → after & impact' },
+    { key:'reframe', label:'The existing process' },
+    { key:'moves',   label:'Seven changes' },
+    { key:'capture', label:'On-site capture' },
+    { key:'intel',   label:'Prioritisation and review' },
+    { key:'impact',  label:'Before and after' },
   ], []);
   const refs = React.useRef(sections.map(() => React.createRef()));
-
-  React.useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
 
   const onScroll = () => {
     const el = contentRef.current; if (!el) return;
@@ -651,147 +670,128 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
   const handleNext = () => { if (contentRef.current) contentRef.current.scrollTop = 0; onNext(); };
 
   return (
-    <div className="cs-fullscreen">
+    <div className="cs-fullscreen" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={`case-title-${project.id}`}>
       <div className="cs-sidebar">
-        <button className="cs-back" onClick={onClose}>← Back to canvas</button>
-        <div className="cs-sidebar-num">{project.code} · {project.name}</div>
-        <h2>Technical verification, <em>field-first</em></h2>
+        <button type="button" className="cs-back" onClick={onClose} data-dialog-close>← Back to canvas</button>
+        <h2 id={`case-title-${project.id}`}>Technical verification redesign</h2>
         <div className="cs-meta-list">
           <div className="cs-meta-item">Client<strong>{project.client}</strong></div>
           <div className="cs-meta-item">Role<strong>{project.role}</strong></div>
           <div className="cs-meta-item">Team<strong>{project.team}</strong></div>
-          <div className="cs-meta-item">Timeline<strong>30 days · Sept 2022</strong></div>
+          <div className="cs-meta-item">Timeline<strong>{project.duration} · {project.year}</strong></div>
           {project.figma && <div className="cs-meta-item">File<a className="cs-figma-link" href={project.figma} target="_blank" rel="noopener noreferrer">Open in Figma →</a></div>}
         </div>
         <div className="cs-toc">
           {sections.map((s, i) => (
-            <button key={s.key}
+            <button type="button" key={s.key}
               className={`cs-toc-btn ${active === i ? 'active' : ''}`}
+              aria-current={active === i ? 'location' : undefined}
               onClick={() => scrollTo(i)}>
               {String(i+1).padStart(2,'0')} · {s.label}
             </button>
           ))}
         </div>
         <div className="cs-proj-nav">
-          <button className="cs-proj-btn" onClick={handleNext}>Next project →</button>
+          <button type="button" className="cs-proj-btn" onClick={handleNext}>Next project →</button>
         </div>
       </div>
 
-      <div className="cs-content" ref={contentRef} onScroll={onScroll}>
-        <div className="cs-progress"><div className="cs-progress-fill" style={{width:`${progress}%`}}/></div>
+      <div className="cs-content" ref={contentRef} onScroll={onScroll} tabIndex="0" aria-label={`${project.name} case study content`}>
+        <div className="cs-progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(progress)}><div className="cs-progress-fill" style={{width:`${progress}%`}}/></div>
 
         {/* 01 — Overview */}
         <div className="cs-hero" ref={refs.current[0]}>
-          <div className="cs-eyebrow">
-            <span>{project.audience}</span>
-            <span>{project.year}</span>
-            <span>{project.tags.join(' · ')}</span>
-          </div>
-          <h1>Technical verification — <em>from a 60-field Excel to the field</em></h1>
-          <p className="cs-lede">The technical valuation of pledged property ran as an email-and-Excel relay. I rebuilt it into a field-first mobile flow that auto-generates a signed, scored report and hands it straight to underwriting — deleting two entire manual "download-and-re-upload" legs.</p>
+          <h1>Technical verification for <em>on-site property checks</em></h1>
+          <p className="cs-lede">I redesigned how property verifiers record findings on site, submit reports for review and pass approved information to the credit team.</p>
         </div>
 
-        {/* 02 — TL;DR */}
+        {/* 02 — The before */}
         <div className="cs-section" ref={refs.current[1]}>
-          <div className="cs-num">02 · The short version</div>
-          <h2>TL;<em>DR</em></h2>
-          <div className="cs-cols3">
-            <div className="cs-tile">
-              <h4>Problem</h4>
-              <p>A 60–70 field Excel was the "system." Reports were hand-typed, printed, physically signed and stamped, scanned, and re-uploaded — then a CPA re-keyed fields into Salesforce.</p>
+          <div className="cs-num">02 · The before</div>
+          <h2>A spreadsheet supported <em>the whole process</em></h2>
+          <div className="tv-before-grid">
+            <div className="tv-before-copy">
+              <p>Technical verification moved between Salesforce, email, WhatsApp and a 60–70 field spreadsheet. The internal and external teams followed different routes, but both depended on manual handoffs.</p>
+              <ul className="cs-list">
+                <li>Verifiers completed every report by hand, without field validation.</li>
+                <li>Reports were downloaded, printed, signed, stamped, scanned and uploaded again.</li>
+                <li>CPAs copied report details back into Salesforce.</li>
+                <li>Vendors were assigned without consistent data on accuracy or turnaround time.</li>
+                <li>Cases had no clear priority by urgency or loan value.</li>
+              </ul>
             </div>
-            <div className="cs-tile">
-              <h4>Approach</h4>
-              <p>Reuse every field that already exists, delete the physical detours, let the system decide the boring stuff (case priority), and move quality control upstream — as a structured mobile capture flow.</p>
-            </div>
-            <div className="cs-tile">
-              <h4>Impact</h4>
-              <p>Two full manual legs eliminated: the print/sign/stamp/scan, and the CPA's download-and-re-upload. Data is structured from the point of observation, so it flows to credit on its own.</p>
+            <div className="tv-panel">
+              <div className="cap"><span className="tv-pill-b">Before</span> The 60–70 field report</div>
+              <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" width="2262" height="7860" alt="Legacy Excel valuation report — a single spreadsheet with 60–70 fields across many sections" loading="lazy" decoding="async"/></div>
+              <p className="tv-caption">The report is scrollable. Verifiers usually completed it after returning from the property visit.</p>
             </div>
           </div>
-          <div className="tv-note"><strong>Numbers:</strong> TAT, rework-rate and touch-count figures are placeholders below — drop your real / projected values in and I'll format them.</div>
         </div>
 
-        {/* 03 — The before */}
+        {/* 03 — The problems in the existing SFDC flow */}
         <div className="cs-section" ref={refs.current[2]}>
-          <div className="cs-num">03 · The before</div>
-          <h2>The "system" was a <em>spreadsheet</em></h2>
-          <p>Technical verification ran as a long chain of manual handoffs stitched together over email and WhatsApp, across two routes — internal (verifier → BTM approval) and external (vendor manager → field verifier → sign & stamp). Both leaked time at every seam.</p>
-          <ul className="cs-list">
-            <li>A <strong style={{color:'var(--ink)'}}>60–70 field Excel</strong> was filled by hand to produce each report. Long, error-prone, no validation.</li>
-            <li><strong style={{color:'var(--ink)'}}>Physical sign &amp; stamp theatre</strong> — download, print, sign, stamp, scan, re-upload. A digital document taking a detour through a printer.</li>
-            <li>The <strong style={{color:'var(--ink)'}}>CPA as a human file-transfer service</strong> — downloading from email, extracting fields, re-keying into Salesforce.</li>
-            <li><strong style={{color:'var(--ink)'}}>Vendor allocation by vibes</strong> — assigned on the BTM's word of mouth, with no data on accuracy or punctuality.</li>
-            <li>Communication scattered across <strong style={{color:'var(--ink)'}}>email + WhatsApp</strong>, and <strong style={{color:'var(--ink)'}}>no prioritisation</strong> of cases by urgency or value.</li>
-          </ul>
-          <div className="tv-panel" style={{marginTop:32,maxWidth:820}}>
-            <div className="cap"><span className="tv-pill-b">Before</span> The legacy 60–70 field Excel — one report, one sheet</div>
-            <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" alt="Legacy Excel valuation report — a single sprawling spreadsheet with 60–70 fields across many sections" loading="lazy"/></div>
-          </div>
-          <p style={{marginTop:16,fontSize:15,color:'var(--ink-3)'}}>Scroll it. Every verifier filled this by hand, back at a desk, from memory — the gap where errors crept in.</p>
-        </div>
-
-        {/* 04 — The problems in the existing SFDC flow */}
-        <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · The problems</div>
-          <h2>The existing <em>SFDC flow</em></h2>
-          <p>This is how technical verification ran inside Salesforce before the redesign — a long chain of handoffs stitched together over email. Mapping it end to end surfaced where it broke.</p>
+          <div className="cs-num">03 · The existing process</div>
+          <h2>Where the process <em>broke down</em></h2>
+          <p>I mapped the full Salesforce process to understand where information changed hands, where work was repeated and where report quality was checked.</p>
           <div className="tv-panel" style={{marginTop:32}}>
             <div className="cap"><span className="tv-pill-b">Before</span> The existing SFDC flow, end to end</div>
-            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788798606683-0.png" alt="The existing SFDC technical-verification flow, mapped end to end" loading="lazy" style={{width:'100%',height:'auto',display:'block'}}/></div>
+            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788798606683-0.png" width="4416" height="1970" alt="The existing SFDC technical-verification flow, mapped end to end" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block'}}/></div>
           </div>
           <div className="cs-cols3" style={{marginTop:32}}>
-            <div className="cs-tile"><h4>01 · Physical steps in a digital process</h4><p>Print, sign, stamp, scan, re-upload — a digital document taking a detour through a printer.</p></div>
-            <div className="cs-tile"><h4>02 · No prioritisation of cases</h4><p>No sense of which case to do first — verifiers picked from a raw queue with no ordering by urgency or value.</p></div>
-            <div className="cs-tile"><h4>03 · No feedback signal</h4><p>Nothing flagged a weak report before credit saw it — quality problems surfaced only after underwriting.</p></div>
+            <div className="cs-tile"><h4>Repeated physical steps</h4><p>Each report was printed, signed, stamped, scanned and uploaded again.</p></div>
+            <div className="cs-tile"><h4>No case priority</h4><p>Verifiers received a list with no ordering by urgency, value or readiness.</p></div>
+            <div className="cs-tile"><h4>Late quality checks</h4><p>Report issues were usually found only after the report reached credit.</p></div>
           </div>
         </div>
 
-        {/* 05 — Eight moves */}
-        <div className="cs-section" ref={refs.current[4]}>
-          <div className="cs-num">05 · The solution</div>
-          <h2>Seven connected <em>moves</em></h2>
-          <p>Roughly following a case's life — from the CPA opening it to the report landing in underwriting. The four highlighted below are the load-bearing ones.</p>
+        {/* 04 — Seven changes */}
+        <div className="cs-section" ref={refs.current[3]}>
+          <div className="cs-num">04 · The redesign</div>
+          <h2>Seven changes across <em>one workflow</em></h2>
+          <p>The redesign follows the order of a case, from assignment to final approval.</p>
+          <ol className="tv-route" aria-label="Redesigned technical verification workflow">
+            <li>Prioritise</li><li>Reuse data</li><li>Manage documents</li><li>Capture on site</li><li>Generate report</li><li>Review corrections</li><li>Send to credit</li>
+          </ol>
           <div className="cs-numlist">
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 01</div><h5>Smart case prioritisation — one button, not a list</h5><p>A single "Start a new case" ranks cases by loan amount and sanction-readiness, and surfaces the highest-priority one. Search overrides when Sales flags something urgent.</p></div>
-            <div className="cs-numcard"><div className="n">Move 02</div><h5>Leverage the data Sales already captured</h5><p>The CPA screen pre-fills collateral details; the CPA only adds the 2–3 fields Sales can't know (Revenue Office, SRO name).</p></div>
-            <div className="cs-numcard"><div className="n">Move 03</div><h5>Unified document handling</h5><p>One upload serves both legal and technical verification; documents can be marked for physical pickup where originals are needed.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 04</div><h5>Field-first mobile capture — killing the Excel</h5><p>The 60–70 Excel fields become native inputs grouped into the same sections. On "Start verification" the app auto-captures lat/long; photos and details are captured on location.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 05</div><h5>Auto-generated, digitally signed report</h5><p>On submit, the report builds itself from structured entry and the pre-stored sign &amp; stamp PNG is appended — deleting the download → print → sign → stamp → scan → re-upload leg.</p></div>
-            <div className="cs-numcard"><div className="n">Move 06</div><h5>Manager review — approve or send back</h5><p>Send-back returns the case to the verifier with a remark; the correction loop lives inside the system instead of over email.</p></div>
-            <div className="cs-numcard tv-focus"><span className="tv-chip">Focus</span><div className="n">Move 07</div><h5>Scoring engine + straight-to-credit hand-off</h5><p>The BTM sees a generated score, red flags and good areas with a recommend, and the structured data flows directly into the credit underwriting grid.</p></div>
+            <div className="cs-numcard"><div className="n">01</div><h5>Prioritise the next case</h5><p>The system ranks cases by loan amount and readiness, while search remains available for urgent work.</p></div>
+            <div className="cs-numcard"><div className="n">02</div><h5>Reuse existing application data</h5><p>Collateral details are pre-filled. The CPA adds only the information that Sales does not have.</p></div>
+            <div className="cs-numcard"><div className="n">03</div><h5>Manage documents in one place</h5><p>One upload supports legal and technical verification, with physical pickup recorded where required.</p></div>
+            <div className="cs-numcard"><div className="n">04</div><h5>Capture findings on site</h5><p>The spreadsheet becomes structured mobile fields with location and photo capture.</p></div>
+            <div className="cs-numcard"><div className="n">05</div><h5>Generate and sign the report</h5><p>The system builds the report and adds the stored signature and stamp on submission.</p></div>
+            <div className="cs-numcard"><div className="n">06</div><h5>Review and return corrections</h5><p>Managers approve the report or return it with a remark inside the same workflow.</p></div>
+            <div className="cs-numcard"><div className="n">07</div><h5>Send approved data to credit</h5><p>The BTM reviews the score and findings before approved data moves to underwriting.</p></div>
           </div>
         </div>
 
-        {/* 06 — Field-first capture (centerpiece) */}
-        <div className="cs-section" ref={refs.current[5]}>
-          <div className="cs-num">06 · The heart of it</div>
-          <h2>The Excel becomes <em>the field</em></h2>
-          <p>The verifier's spreadsheet turns into a structured mobile app: the same sections, now native input fields captured at the point of observation. The gap where "fill the Excel back at the desk" invited errors is gone.</p>
+        {/* 05 — On-site capture */}
+        <div className="cs-section" ref={refs.current[4]}>
+          <div className="cs-num">05 · On-site capture</div>
+          <h2>Record findings <em>during the property visit</em></h2>
+          <p>The mobile workflow keeps the report's familiar sections, but replaces spreadsheet cells with structured fields. Verifiers can enter details, location and photos while they are at the property.</p>
 
           <div className="tv-ba">
             <div className="tv-panel">
               <div className="cap"><span className="tv-pill-b">Before</span> 60–70 fields, one sheet, by hand</div>
-              <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" alt="Legacy Excel valuation report" loading="lazy"/></div>
+              <div className="tv-scroll"><img src="uploads/pasted-1788100753214-0.png" width="2262" height="7860" alt="Legacy Excel valuation report" loading="lazy" decoding="async"/></div>
             </div>
             <div className="tv-panel">
               <div className="cap"><span className="tv-pill-a">After</span> Structured mobile capture, on site</div>
-              <div className="tv-scroll-phone"><img src="uploads/pasted-1788100779950-0.png" alt="Rebuilt mobile verifier — Data Entry section list" loading="lazy"/></div>
+              <div className="tv-scroll-phone"><img src="uploads/pasted-1788100779950-0.png" width="720" height="2850" alt="Rebuilt mobile verifier — Data Entry section list" loading="lazy" decoding="async"/></div>
             </div>
           </div>
 
-          <div className="cs-subhead">Inside a section — native fields, geo-proof, photos on location</div>
+          <div className="cs-subhead">Inside a report section</div>
           <div className="tv-phones">
-            <img className="tv-shot-phone" src="uploads/pasted-1788102984042-0.png" alt="Rebuilt mobile verifier — Basic Details with location auto-captured from GPS (lat/long shown on map)" loading="lazy"/>
+            <img className="tv-shot-phone" src="uploads/pasted-1788102984042-0.png" width="360" height="948" alt="Rebuilt mobile verifier — Basic Details with location auto-captured from GPS (lat/long shown on map)" loading="lazy" decoding="async"/>
             <div style={{flex:1,minWidth:280,display:'flex',flexDirection:'column',gap:16,alignSelf:'center'}}>
-              <div className="cs-tile"><h4>Native fields, not cells</h4><p>Every Excel cell becomes a typed input in the same section — unlocking validation and, later, scoring.</p></div>
-              <div className="cs-tile"><h4>Auto lat/long geo-proof</h4><p>Tapping "Start verification" auto-captures coordinates — no manual entry, and tamper-resistant proof the verifier was on site.</p></div>
-              <div className="cs-tile"><h4>Captured on location</h4><p>Photos and every detail are entered on the ground and submitted — structured data instead of a spreadsheet reconstructed from memory.</p></div>
+              <div className="cs-tile"><h4>Structured fields</h4><p>Each spreadsheet cell becomes the right input type, allowing validation before submission.</p></div>
+              <div className="cs-tile"><h4>Automatic location</h4><p>Starting a verification records the property's coordinates without manual entry.</p></div>
+              <div className="cs-tile"><h4>Photos and notes on site</h4><p>Verifiers add evidence during the visit instead of rebuilding the report later from memory.</p></div>
             </div>
           </div>
 
-          <div className="cs-subhead">On submit — the report signs itself</div>
-          <p>The vendor manager uploads their sign &amp; stamp once at onboarding. On submission the report is generated from the structured entry and the stored signature is appended — the printer detour is gone.</p>
+          <div className="cs-subhead">Report generation and signature</div>
+          <p>The vendor manager stores their signature and stamp during onboarding. On submission, the system generates the report and adds both automatically.</p>
           <div className="tv-sign">
             <div className="sigwrap">
               <span className="sig">Chintan J.</span>
@@ -801,26 +801,26 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 07 — Intelligence layer */}
-        <div className="cs-section" ref={refs.current[6]}>
-          <div className="cs-num">07 · Intelligence</div>
-          <h2>Let the system decide the <em>boring stuff</em></h2>
+        {/* 06 — Prioritisation and review */}
+        <div className="cs-section" ref={refs.current[5]}>
+          <div className="cs-num">06 · Prioritisation and review</div>
+          <h2>Help teams decide <em>what needs attention</em></h2>
 
-          <div className="cs-subhead">Case prioritisation — one button, not a queue</div>
-          <p>Instead of a raw queue that invites cherry-picking, one action surfaces the highest-priority case — ranked by loan value and sanction-readiness. A list is a decision-fatigue tax; a single prioritised action quietly enforces the business's order.</p>
+          <div className="cs-subhead">Case prioritisation</div>
+          <p>The start action surfaces the highest-priority case using loan value and sanction readiness. Search remains available when a specific case is urgent.</p>
           <div className="tv-panel" style={{marginTop:16}}>
             <div className="cap"><span className="tv-pill-a">After</span> Up next — the single prioritised action</div>
-            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788801695405-0.png" alt="Up next for you — a single prioritised case surfaced with a Start Case action, ranked by TAT remaining, loan amount and processing risk" loading="lazy" style={{width:'100%',height:'auto',display:'block'}}/></div>
+            <div className="tv-panel-pad" style={{padding:'22px'}}><img src="uploads/pasted-1788801695405-0.png" width="2260" height="526" alt="Up next for you — a single prioritised case surfaced with a Start Case action, ranked by TAT remaining, loan amount and processing risk" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block'}}/></div>
           </div>
 
-          <div className="cs-subhead">BTM scoring — read the signal, not the whole report</div>
-          <p>After the manager submits, the BTM doesn't wade through the full report — they see a generated score, its red flags and good areas, and an approve/reject recommendation. On approval the structured data flows directly into the credit underwriting grid.</p>
+          <div className="cs-subhead">BTM review</div>
+          <p>The BTM sees the report score, concerns and positive findings before opening the full report. Approved information then moves to the credit underwriting grid.</p>
           <div className="tv-browser">
             <div className="bar">
               <span className="d" style={{background:'#f2655f'}}/><span className="d" style={{background:'#f5bf4f'}}/><span className="d" style={{background:'#5bc46b'}}/>
               <span className="addr">parakh.piramal.com / collateral / technical-report</span>
             </div>
-            <div className="win"><img src="uploads/pasted-1788100816590-0.png" alt="BTM desktop approver — technical scrutiny report with report rating score, valuations, full report and approve / send back actions" loading="lazy"/></div>
+            <div className="win"><img src="uploads/pasted-1788100816590-0.png" width="1290" height="7334" alt="BTM desktop approver — technical scrutiny report with report rating score, valuations, full report and approve / send back actions" loading="lazy" decoding="async"/></div>
           </div>
           <div className="cs-cols3" style={{marginTop:24}}>
             <div className="cs-tile"><h4>Score + red flags</h4><p>Report strength surfaced up front with its weak and strong areas — quality control moved upstream of a human read.</p></div>
@@ -829,13 +829,15 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 08 — Before → after & impact */}
-        <div className="cs-section" ref={refs.current[7]}>
-          <div className="cs-num">08 · Before → after</div>
-          <h2>What <em>shifted</em></h2>
-          <table className="tv-table">
-            <thead><tr><th></th><th>Before</th><th>After</th></tr></thead>
-            <tbody>
+        {/* 07 — Before → after & impact */}
+        <div className="cs-section" ref={refs.current[6]}>
+          <div className="cs-num">07 · Before and after</div>
+          <h2>What <em>changed</em></h2>
+          <div className="table-scroll" role="region" aria-label="Technical verification before and after comparison" tabIndex="0">
+            <table className="tv-table">
+              <caption className="sr-only">Technical verification workflow before and after the redesign</caption>
+              <thead><tr><th scope="col">Workflow area</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
+              <tbody>
               <tr><td>Report authoring</td><td className="dim">60–70 field Excel, by hand</td><td className="hi">Structured mobile fields, on-site</td></tr>
               <tr><td>Sign &amp; stamp</td><td className="dim">Print → sign → stamp → scan → upload</td><td className="hi">Pre-stored PNG auto-appended</td></tr>
               <tr><td>Geo proof</td><td className="dim">None / manual</td><td className="hi">Auto lat/long on "Start verification"</td></tr>
@@ -843,15 +845,16 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
               <tr><td>Prioritisation</td><td className="dim">None</td><td className="hi">Ranked by loan value + readiness</td></tr>
               <tr><td>Query &amp; rectification</td><td className="dim">Email + WhatsApp</td><td className="hi">In-system loops with remarks</td></tr>
               <tr><td>Quality check</td><td className="dim">Human reads full report</td><td className="hi">Auto-score + red flags + recommend</td></tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
           <div className="cs-big">Two full manual legs eliminated: the vendor manager's print/sign/stamp/scan, and the CPA's download-and-re-upload to Salesforce.</div>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
             <div className="cs-outcome"><div className="big"><em>2</em></div><div className="lab">Manual legs removed</div></div>
-            <div className="cs-outcome"><div className="big"><em>[TAT]</em></div><div className="lab">Report TAT, before → after</div></div>
-            <div className="cs-outcome"><div className="big"><em>[%]</em></div><div className="lab">Rework rate reduction</div></div>
+            <div className="cs-outcome"><div className="big"><em>At source</em></div><div className="lab">Structured data capture</div></div>
+            <div className="cs-outcome"><div className="big"><em>Upstream</em></div><div className="lab">Quality checks before credit</div></div>
           </div>
-          <div className="tv-note"><strong>Bracketed metrics are placeholders.</strong> Send me your real or projected numbers and I'll drop them in (labelled as targets if not yet measured).</div>
+          <div className="tv-note"><strong>Measurement note:</strong> Validated turnaround and rework metrics weren’t available, so these outcomes remain qualitative.</div>
         </div>
       </div>
     </div>
@@ -859,4 +862,3 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
 };
 
 Object.assign(window, { Hero, SectionHead, About, Sticky, Stats, Photo, Tools, ProjectCard, Timeline, Contact, Marquee, CaseStudy, ExtendedCaseStudy, TechCaseStudy });
-

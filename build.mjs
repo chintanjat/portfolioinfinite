@@ -59,14 +59,14 @@ const html = `<!doctype html>
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
     <rect width="1200" height="800" fill="#eef2f6"/>
     <circle cx="600" cy="330" r="9" fill="#3f8f6b"/>
-    <text x="600" y="470" font-family="Georgia, serif" font-size="130" font-style="italic" fill="#1e2b3a" text-anchor="middle">CJ</text>
-    <text x="600" y="560" font-family="monospace" font-size="30" letter-spacing="6" fill="#5a6b7d" text-anchor="middle">INFINITE CANVAS</text>
+    <text x="600" y="470" font-family="Inter Tight, sans-serif" font-size="130" font-weight="700" fill="#1e2b3a" text-anchor="middle">CJ</text>
+    <text x="600" y="560" font-family="Inter Tight, sans-serif" font-size="30" font-weight="400" letter-spacing="2" fill="#5a6b7d" text-anchor="middle">Infinite canvas</text>
   </svg>
 </template>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 ${css}
 </style>

@@ -11,6 +11,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 2.2;
+const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 function useCanvasEngine() {
   const [t, setT] = useState({ x: 0, y: 0, z: 1 });
@@ -56,7 +57,7 @@ function useCanvasEngine() {
     const z = zoom ?? tRef.current.z;
     const nx = el.clientWidth / 2 - worldX * z;
     const ny = el.clientHeight / 2 - worldY * z;
-    if (!animate) { setTransform({ x: nx, y: ny, z }); return; }
+    if (!animate || prefersReducedMotion()) { setTransform({ x: nx, y: ny, z }); return; }
     const from = { ...tRef.current };
     const to = { x: nx, y: ny, z };
     const start = performance.now();
@@ -125,6 +126,7 @@ function useCanvasEngine() {
     const onUp = () => {
       panning.current = false;
       setIsPanning(false);
+      if (prefersReducedMotion()) vel.current = { x: 0, y: 0 };
     };
     // Wheel handling is now done at the App level (snap-to-section).
     // Keep only pinch-to-zoom via ctrl/meta+wheel here.
@@ -198,20 +200,17 @@ const App = () => {
   const engine = useCanvasEngine();
   const [openCase, setOpenCase] = useState(null);
   const [activeSection, setActiveSection] = useState('hero');
-  const [showHint, setShowHint] = useState(false);
-  const [tweaksOpen, setTweaksOpen] = useState(false);
-  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+  const [showHint, setShowHint] = useState(true);
+  const tweaks = TWEAK_DEFAULTS;
 
   // Responsive fit zoom based on viewport width
   const computeFitZoom = useCallback(() => {
     const el = engine.stageRef.current;
-    if (!el) return 0.65;
+    if (!el) return 0.72;
     const w = el.clientWidth;
-    if (w < 520) return 0.32;
-    if (w < 760) return 0.42;
-    if (w < 1100) return 0.55;
-    if (w < 1500) return 0.65;
-    return 0.72;
+    if (w <= 1024) return 1;
+    if (w < 1500) return 0.72;
+    return 0.78;
   }, [engine.stageRef]);
 
   // initial positioning — center on hero at responsive zoom
@@ -232,6 +231,20 @@ const App = () => {
 
   const activeSectionRef = useRef('hero');
   useEffect(() => { activeSectionRef.current = activeSection; });
+
+  // On compact screens the canvas becomes a readable linear document.
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 1024px)').matches || !('IntersectionObserver' in window)) return;
+    const sections = Array.from(document.querySelectorAll('.mobile-flow [data-section]'));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target.dataset.section) setActiveSection(visible.target.dataset.section);
+    }, { rootMargin: '-25% 0px -60% 0px', threshold: [0.1, 0.4, 0.7] });
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   // Snap-scroll: wheel/trackpad jumps to next/prev section
   const snapLock = useRef(false);
@@ -337,19 +350,24 @@ const App = () => {
     setActiveSection(best.id);
   }, [engine.t]);
 
-  // hide hint after first interaction
+  // Keep onboarding available until the visitor interacts or dismisses it.
   useEffect(() => {
     const hide = () => setShowHint(false);
-    const t = setTimeout(hide, 6000);
     window.addEventListener('mousedown', hide, { once: true });
     window.addEventListener('wheel', hide, { once: true });
-    return () => clearTimeout(t);
+    window.addEventListener('touchstart', hide, { once: true });
+    return () => {
+      window.removeEventListener('mousedown', hide);
+      window.removeEventListener('wheel', hide);
+      window.removeEventListener('touchstart', hide);
+    };
   }, []);
 
   // keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (openCase) return;
       const idx = ['1','2','3','4','5'].indexOf(e.key);
       if (idx >= 0) {
         const s = SECTIONS[idx];
@@ -378,31 +396,14 @@ const App = () => {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [engine.t.z, computeFitZoom]); // eslint-disable-line
-
-  // tweaks edit-mode protocol
-  useEffect(() => {
-    const onMsg = (e) => {
-      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
-      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
-    };
-    window.addEventListener('message', onMsg);
-    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-    return () => window.removeEventListener('message', onMsg);
-  }, []);
-
-  const updateTweak = (k, v) => {
-    setTweaks(prev => {
-      const next = { ...prev, [k]: v };
-      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
-      return next;
-    });
-  };
+  }, [engine.t.z, computeFitZoom, openCase]); // eslint-disable-line
 
   const openProject = (id) => {
     const p = PROJECTS.find(p => p.id === id);
     if (p) setOpenCase(p);
   };
+
+  const closeProject = useCallback(() => setOpenCase(null), []);
 
   const nextProject = () => {
     if (!openCase) return;
@@ -412,6 +413,14 @@ const App = () => {
   };
 
   const jumpTo = (sid) => {
+    if (window.matchMedia('(max-width: 1024px)').matches) {
+      document.getElementById(`mobile-${sid}`)?.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        block: 'start',
+      });
+      setActiveSection(sid);
+      return;
+    }
     const s = SECTIONS.find(s => s.id === sid);
     if (s) engine.panTo(s.center.x, s.center.y, computeFitZoom());
   };
@@ -441,10 +450,20 @@ const App = () => {
 
   return (
     <>
+      <a
+        className="skip-link"
+        href="#main-content"
+        aria-hidden={openCase ? 'true' : undefined}
+        tabIndex={openCase ? -1 : undefined}
+      >
+        Skip to portfolio content
+      </a>
+      <div className="site-shell" aria-hidden={openCase ? 'true' : undefined}>
       {/* Parallax grid - independent from canvas transform but influenced */}
       {tweaks.parallax && (
         <div
           className={`grid-layer grid-${tweaks.grid || 'dots'}`}
+          aria-hidden="true"
           style={{
             backgroundSize: `${28 * engine.t.z}px ${28 * engine.t.z}px`,
             backgroundPosition: `${engine.t.x * 0.5}px ${engine.t.y * 0.5}px`,
@@ -453,7 +472,7 @@ const App = () => {
       )}
 
       {/* Ambient dust */}
-      <div className="dust">
+      <div className="dust" aria-hidden="true">
         {Array.from({length: 12}).map((_, i) => (
           <span key={i} style={{
             left: `${(i * 37) % 100}%`,
@@ -464,124 +483,98 @@ const App = () => {
         ))}
       </div>
 
-      <div
-        className={`stage ${engine.isPanning ? 'is-panning' : ''}`}
-        ref={engine.stageRef}
-      >
-        <div className="canvas" style={canvasStyle}>
-          <Connectors/>
-          {ISLANDS.map(renderIsland)}
+      <main id="main-content" tabIndex="-1">
+        <div
+          className={`stage ${engine.isPanning ? 'is-panning' : ''}`}
+          ref={engine.stageRef}
+          aria-label="Interactive portfolio canvas. Use the section navigation, arrow keys, or numbered shortcuts to move."
+          aria-describedby="canvas-help"
+        >
+          <div className="canvas" style={canvasStyle}>
+            <Connectors/>
+            {ISLANDS.map(renderIsland)}
+          </div>
         </div>
-      </div>
 
-      <div className="topbar">
-        <div className="brand">
-          <span className="bdot"/> Chintan Jat · designing in the void
+        <div className="mobile-flow">
+          <section id="mobile-hero" data-section="hero" aria-label="Introduction"><Hero/></section>
+          <section id="mobile-about" data-section="about" aria-label="About">
+            <SectionHead num="About" h1="About my" em="work"/>
+            <About/><Photo/><Tools/>
+          </section>
+          <section id="mobile-work" data-section="work" aria-label="Selected work">
+            <SectionHead num="Work" h1="Selected" em="work"/>
+            <div className="mobile-projects">{PROJECTS.map(project => <ProjectCard key={project.id} project={project} onOpen={openProject} compact/>)}</div>
+          </section>
+          <section id="mobile-exp" data-section="exp" aria-label="Experience">
+            <SectionHead num="Experience" h1="Where I have" em="worked"/>
+            <Timeline/>
+          </section>
+          <section id="mobile-contact" data-section="contact" aria-label="Contact">
+            <SectionHead num="Contact" h1="Get in" em="touch"/>
+            <Contact/>
+          </section>
         </div>
-        <div className="section-jumps">
+      </main>
+
+      <header className="topbar">
+        <div className="brand">
+          <span className="bdot" aria-hidden="true"/> Chintan Jat · designing in the void
+        </div>
+        <nav className="section-jumps" aria-label="Portfolio sections">
           {SECTIONS.map((s, i) => (
             <button
+              type="button"
               key={s.id}
               className={activeSection === s.id ? 'active' : ''}
+              aria-current={activeSection === s.id ? 'page' : undefined}
               onClick={() => jumpTo(s.id)}
             >
               <span style={{opacity:0.5,marginRight:6}}>{i+1}</span>{s.label}
             </button>
           ))}
-        </div>
+        </nav>
         <a
           className="resume-btn"
           href="uploads/Chintanjat_cv-3a0f1e72.pdf"
           download="Chintan-Jat-Resume.pdf"
-          target="_blank"
-          rel="noopener"
           title="Download resume (PDF)"
         >
           <span className="rdown">↓</span>
           <span><span className="rlabel-full">Download </span>Resume</span>
         </a>
+      </header>
+
+      <div className="zoom-ctrl" data-interactive aria-label="Canvas zoom controls">
+        <button type="button" onClick={() => engine.zoomTo(engine.t.z * 1.25)} aria-label="Zoom in">+</button>
+        <div className="lvl" aria-live="polite" aria-atomic="true">{Math.round(engine.t.z * 100)}%</div>
+        <button type="button" onClick={() => engine.zoomTo(engine.t.z * 0.8)} aria-label="Zoom out">−</button>
+        <button type="button" onClick={() => engine.panTo(SECTIONS[0].center.x, SECTIONS[0].center.y, computeFitZoom())} aria-label="Reset canvas view">⌂</button>
       </div>
 
-      <button
-        className="fab tweaks-fab"
-        onClick={() => setTweaksOpen(o => !o)}
-        data-interactive
-        title="Tweaks"
-        style={{display: 'none'}}
-      >⚙</button>
+      <Minimap t={engine.t} stageRef={engine.stageRef} islands={ISLANDS}/>
 
-      {tweaksOpen && false && (
-        <div className="tweaks-panel" data-interactive>
-          <header>
-            Tweaks
-            <span style={{cursor:'pointer', fontSize:17}} onClick={() => setTweaksOpen(false)}>×</span>
-          </header>
-          <div className="tw-body">
-            <div className="tw-row">
-              <div className="tw-lab">Palette</div>
-              <div className="tw-swatches">
-                {['cool','warm','mono'].map(th => (
-                  <div key={th}
-                    className={`tw-swatch ${tweaks.theme === th ? 'active' : ''}`}
-                    style={{
-                      background: th === 'cool' ? 'oklch(0.58 0.13 235)' :
-                                  th === 'warm' ? 'oklch(0.62 0.14 50)' :
-                                                  'oklch(0.35 0 0)'
-                    }}
-                    onClick={() => updateTweak('theme', th)}
-                    title={th}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="tw-row">
-              <div className="tw-lab">Grid style</div>
-              <div className="tw-options">
-                {['dots','lines','none'].map(g => (
-                  <div key={g}
-                    className={`tw-opt ${(tweaks.grid || 'dots') === g ? 'active' : ''}`}
-                    onClick={() => updateTweak('grid', g)}
-                  >{g}</div>
-                ))}
-              </div>
-            </div>
-            <div className="tw-row">
-              <div className="tw-lab">Parallax grid</div>
-              <div className="tw-options">
-                <div className={`tw-opt ${tweaks.parallax ? 'active' : ''}`} onClick={() => updateTweak('parallax', true)}>on</div>
-                <div className={`tw-opt ${!tweaks.parallax ? 'active' : ''}`} onClick={() => updateTweak('parallax', false)}>off</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="zoom-ctrl" data-interactive>
-        <button onClick={() => engine.zoomTo(engine.t.z * 1.25)}>+</button>
-        <div className="lvl">{Math.round(engine.t.z * 100)}%</div>
-        <button onClick={() => engine.zoomTo(engine.t.z * 0.8)}>−</button>
-        <button onClick={() => engine.panTo(SECTIONS[0].center.x, SECTIONS[0].center.y, computeFitZoom())} title="Fit">◉</button>
-      </div>
-
-      <Minimap t={engine.t} stageRef={engine.stageRef} islands={ISLANDS} onJump={(x,y) => engine.panTo(x,y)}/>
-
-      <div className={`hint ${!showHint ? 'hidden' : ''}`}>
+      <div className={`hint ${!showHint ? 'hidden' : ''}`} id="canvas-help">
         <span className="hk">scroll</span><span>to move between sections</span>
         <span className="hk">⌘/ctrl+scroll</span><span>to zoom the canvas</span>
         <span className="hk">1–5</span><span>to teleport</span>
+        <button type="button" className="hint-close" onClick={() => setShowHint(false)} aria-label="Dismiss canvas instructions">×</button>
+      </div>
+
+      <div className="sr-only" role="status" aria-live="polite">Current section: {SECTIONS.find(section => section.id === activeSection)?.label}</div>
       </div>
 
       {openCase && (openCase.id === 'tech'
-        ? <TechCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
+        ? <TechCaseStudy project={openCase} onClose={closeProject} onNext={nextProject}/>
         : openCase.extended
-          ? <ExtendedCaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>
-          : <CaseStudy project={openCase} onClose={() => setOpenCase(null)} onNext={nextProject}/>)}
+          ? <ExtendedCaseStudy project={openCase} onClose={closeProject} onNext={nextProject}/>
+          : <CaseStudy project={openCase} onClose={closeProject} onNext={nextProject}/>)}
     </>
   );
 };
 
 /* Minimap */
-const Minimap = ({ t, stageRef, islands, onJump }) => {
+const Minimap = ({ t, stageRef, islands }) => {
   const W = 220, H = 140;
   // canvas world bounds (approx)
   const bounds = { x: -500, y: 0, w: 3200, h: 8400 };
@@ -606,12 +599,7 @@ const Minimap = ({ t, stageRef, islands, onJump }) => {
   })();
 
   return (
-    <div className="minimap" data-interactive onClick={(e) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = (e.clientX - rect.left - ox) / scale;
-      const y = (e.clientY - rect.top - oy) / scale;
-      onJump(x, y);
-    }}>
+    <div className="minimap" data-interactive aria-hidden="true">
       <div className="mm-label">You are here</div>
       <div className="mm-canvas">
         {islands.map(it => {
@@ -641,7 +629,7 @@ const Minimap = ({ t, stageRef, islands, onJump }) => {
 
 /* Connectors — dashed lines between work cards */
 const Connectors = () => (
-  <svg className="connectors" width="3500" height="3500" viewBox="0 0 3500 3500">
+  <svg className="connectors" width="3500" height="3500" viewBox="0 0 3500 3500" aria-hidden="true">
     {/* hero → about */}
     <path d="M 610 520 Q 480 1000 360 1560" />
     {/* about → work */}
@@ -660,7 +648,6 @@ const Gate = ({ onUnlock }) => {
   const submit = (e) => {
     e.preventDefault();
     if (val === 'designinginthevoid') {
-      try { sessionStorage.setItem('cj_unlocked', '1'); } catch (_) {}
       onUnlock();
     } else {
       setErr('Incorrect password. Try again.');
@@ -673,9 +660,10 @@ const Gate = ({ onUnlock }) => {
         <h1>Enter the <em>canvas</em></h1>
         <p>This portfolio is private. Enter the password to continue.</p>
         <form onSubmit={submit}>
-          <input type="password" value={val} autoFocus placeholder="Password"
+          <label htmlFor="portfolio-password">Password</label>
+          <input id="portfolio-password" type="password" value={val} autoFocus autoComplete="current-password" placeholder="Enter password"
             onChange={(e) => { setVal(e.target.value); setErr(''); }} />
-          <div className="err">{err}</div>
+          <div className="err" role="alert" aria-live="assertive">{err}</div>
           <button type="submit">Unlock</button>
         </form>
       </div>
@@ -683,16 +671,11 @@ const Gate = ({ onUnlock }) => {
   );
 };
 
-// Set GATE_ENABLED = true to bring the password screen back.
-const GATE_ENABLED = false;
+const GATE_ENABLED = true;
 
 const Root = () => {
-  const [unlocked, setUnlocked] = React.useState(() => {
-    if (!GATE_ENABLED) return true;
-    try { return sessionStorage.getItem('cj_unlocked') === '1'; } catch (_) { return false; }
-  });
+  const [unlocked, setUnlocked] = React.useState(!GATE_ENABLED);
   return unlocked ? <App/> : <Gate onUnlock={() => setUnlocked(true)}/>;
 };
 
 ReactDOM.createRoot(document.getElementById('root')).render(<Root/>);
-
