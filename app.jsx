@@ -437,6 +437,7 @@ const App = () => {
       case 'photo':    return wrap(<Photo/>);
       case 'tools':    return wrap(<Tools/>);
       case 'project':  return <div {...common} data-interactive><ProjectCard project={it.project} onOpen={openProject} compact={it.compact} /></div>;
+      case 'workInvite': return <div {...common} data-interactive><WorkInvite onConnect={() => jumpTo('contact')} /></div>;
       case 'timeline': return wrap(<Timeline/>);
       case 'contact':  return <div {...common} data-interactive><Contact/></div>;
       case 'marquee':  return wrap(<Marquee text={it.text}/>);
@@ -505,6 +506,7 @@ const App = () => {
           <section id="mobile-work" data-section="work" aria-label="Selected work">
             <SectionHead num="Work" h1="Selected" em="work"/>
             <div className="mobile-projects">{PROJECTS.map(project => <ProjectCard key={project.id} project={project} onOpen={openProject} compact/>)}</div>
+            <WorkInvite onConnect={() => jumpTo('contact')}/>
           </section>
           <section id="mobile-exp" data-section="exp" aria-label="Experience">
             <SectionHead num="Experience" h1="Where I have" em="worked"/>

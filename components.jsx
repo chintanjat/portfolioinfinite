@@ -96,7 +96,7 @@ const Stats = () => (
   <div className="card stats">
     <div>
       <div className="s-num"><em>20+</em></div>
-      <div className="s-lab">Products shipped</div>
+      <div className="s-lab">Products shipped or led</div>
     </div>
     <div>
       <div className="s-num">4<em>yrs</em></div>
@@ -136,7 +136,9 @@ const Tools = () => (
 const ProjectCard = ({ project, onOpen, compact }) => (
   <button type="button" className={`card project${compact ? ' compact' : ''}`} onClick={() => onOpen(project.id)} aria-haspopup="dialog" aria-label={`Read case study: ${project.title}`}>
     <div className="thumb">
-      <div className="ph">{project.thumbLabel}</div>
+      {project.thumbImage
+        ? <img src={project.thumbImage} alt={project.thumbAlt || ''} width="840" height="640" loading="lazy" decoding="async"/>
+        : <div className="ph">{project.thumbLabel}</div>}
       <div className="badge">{project.name}</div>
     </div>
     <div className="body">
@@ -148,6 +150,13 @@ const ProjectCard = ({ project, onOpen, compact }) => (
       <span className="cta">Read case study <span aria-hidden="true">→</span></span>
     </div>
   </button>
+);
+
+const WorkInvite = ({ onConnect }) => (
+  <div className="work-invite">
+    <p><strong>These are just two of the projects I can share here.</strong> I’d love to connect and show you more of the work I’ve done.</p>
+    <button type="button" onClick={onConnect}>Let’s connect <span aria-hidden="true">→</span></button>
+  </div>
 );
 
 const Timeline = () => {
@@ -558,7 +567,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
         <div className="cs-section" ref={refs.current[4]}>
           <div className="cs-num">05 · What I saw on the ground</div>
           <h2>Watching the work changed <em>the problem</em></h2>
-          <p>Phase 1 was built from a walkthrough. Before Phase 2 I went and watched the work itself: I sat with national legal heads and branch approvers while they read live reports and made a call, watched external verifiers fill their own Word files section by section, and pulled 15–20 real reports from different vendors to read side by side.</p>
+          <p>Phase 1 was built from a walkthrough. Before Phase 2, I reviewed 12 reports from different vendors and spoke with one CPA, one approver, the national head and one geo head. The reports and conversations showed that the deeper problem was the report itself: its inconsistent structure and repeated data entry.</p>
           <p>What I found on the ground wasn't the problem I'd been handed. The brief was "rebuild the workflow." The work pointed somewhere else entirely — at the report itself, and how much of it was people re-doing work that had already been done.</p>
 
           <img src="uploads/Frame 12 compressed.jpg" width="1148" height="646" alt="Legal approver working at a whiteboard, beside a spread of vendor reports in inconsistent formats from different agencies" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8,marginBottom:4}}/>
@@ -596,7 +605,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <h2>One format, <em>a third of the typing</em></h2>
 
           <div className="cs-subhead">Fixed the order of the sections</div>
-          <p>Across the reports I read, the sections were jumbled — B sitting near E, D near A. I settled one order with the national heads and approvers and built it into the screen, the same for every vendor.</p>
+          <p>Across the 12 reports I reviewed, the sections were jumbled — B sitting near E, D near A. I settled one order with the national head and approver and built it into the screen, the same for every vendor.</p>
           <img src="uploads/section_order compressed.jpg" width="1148" height="646" alt="Report with a fixed, ordered list of sections — Part 1 Basic details through Part 7" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
 
           <div className="cs-subhead">Cut the entry to what only the verifier knows</div>
@@ -612,8 +621,8 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
         <div className="cs-section" ref={refs.current[6]}>
           <div className="cs-num">07 · Alignment</div>
           <h2>Getting everyone <em>on board</em></h2>
-          <p>Fixing the format meant telling 510 vendors their report was changing. I put the two problems to the stakeholders first: your approvers can't build a habit because every report is ordered differently, and your verifiers spend so long typing that it pushes the case TAT out.</p>
-          <p>Then the trade. Yes, the order is fixed now, but the typing drops by about 70% — because everything the CPA enters is carried forward. I walked the national legal manager, the branch legal manager and a verifier through the whole flow in Figma.</p>
+          <p>The new format had to work across 400+ branches and for 350+ approvers, including approvers mapped to several rural branches. I put the two problems to the stakeholders first: every vendor ordered reports differently, and verifiers were retyping information the business already had.</p>
+          <p>The trade-off was straightforward: the section order became fixed, while carrying CPA data forward removed about 70% of verifier typing. I walked the CPA, approver, national head and geo head through the complete flow in Figma.</p>
         </div>
 
         {/* 08 — Impact */}
@@ -621,10 +630,11 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-num">08 · Impact</div>
           <h2><em>Impact</em></h2>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
-            <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">Report turnaround (p75)</div></div>
-            <div className="cs-outcome"><div className="big"><em>~70%</em></div><div className="lab">Of verifier typing removed</div></div>
+            <div className="cs-outcome"><div className="big"><em>70%</em></div><div className="lab">Less verifier typing</div></div>
             <div className="cs-outcome"><div className="big"><em>15–20</em> min</div><div className="lab">Approver decision time per case</div></div>
-            <div className="cs-outcome"><div className="big"><em>510</em></div><div className="lab">Vendors on one format</div></div>
+            <div className="cs-outcome"><div className="big"><em>30,000+</em></div><div className="lab">Reports handled each month</div></div>
+            <div className="cs-outcome"><div className="big"><em>100%</em></div><div className="lab">Mandatory workflow adoption</div></div>
+            <div className="cs-outcome"><div className="big"><em>350+</em></div><div className="lab">Approvers across 400+ branches</div></div>
           </div>
           <div className="cs-subhead">Steps that no longer exist</div>
           <ul className="cs-list">
@@ -635,8 +645,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-savings">
             <h5>Licence savings</h5>
             <ul className="cs-list">
-              <li>400+ branches × 2 Salesforce licences (1 CPA + 1 Legal Manager each) — sunset</li>
-              <li>510 vendor licences avoided as the network grows</li>
+              <li>₹5 Cr saved by sunsetting Salesforce licences across the legal-verification workflow</li>
             </ul>
           </div>
         </div>
@@ -870,15 +879,18 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
           <div className="cs-big">Two full manual legs eliminated: the vendor manager's print/sign/stamp/scan, and the CPA's download-and-re-upload to Salesforce.</div>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
-            <div className="cs-outcome"><div className="big"><em>2</em></div><div className="lab">Manual legs removed</div></div>
-            <div className="cs-outcome"><div className="big"><em>At source</em></div><div className="lab">Structured data capture</div></div>
-            <div className="cs-outcome"><div className="big"><em>Upstream</em></div><div className="lab">Quality checks before credit</div></div>
+            <div className="cs-outcome"><div className="big"><em>8h → 2h</em></div><div className="lab">Report completion, including travel</div></div>
+            <div className="cs-outcome"><div className="big"><em>2d → 0.5d</em></div><div className="lab">End-to-end verification TAT</div></div>
+            <div className="cs-outcome"><div className="big"><em>30,000+</em></div><div className="lab">Cases handled each month across India</div></div>
+            <div className="cs-outcome"><div className="big"><em>~15 min</em></div><div className="lab">Saved per case through automatic reports</div></div>
+            <div className="cs-outcome"><div className="big"><em>30%</em></div><div className="lab">Reported reduction in SLA and CPA effort</div></div>
+            <div className="cs-outcome"><div className="big"><em>100%</em></div><div className="lab">Mandatory workflow adoption</div></div>
           </div>
-          <div className="tv-note"><strong>Measurement note:</strong> Validated turnaround and rework metrics weren’t available, so these outcomes remain qualitative.</div>
+          <div className="tv-note"><strong>Scale note:</strong> Operating estimates cover 400 branches, about 350 approvers, 750+ vendors and roughly 1,500 verifiers.</div>
         </div>
       </div>
     </div>
   );
 };
 
-Object.assign(window, { Hero, SectionHead, About, Sticky, Stats, Photo, Tools, ProjectCard, Timeline, Contact, Marquee, CaseStudy, ExtendedCaseStudy, TechCaseStudy });
+Object.assign(window, { Hero, SectionHead, About, Sticky, Stats, Photo, Tools, ProjectCard, WorkInvite, Timeline, Contact, Marquee, CaseStudy, ExtendedCaseStudy, TechCaseStudy });

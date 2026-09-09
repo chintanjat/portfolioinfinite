@@ -8,7 +8,7 @@ const PROJECTS = [
     extended: true,
     title: 'Legal verification journey redesign',
     client: 'Piramal Capital',
-    audience: 'For 400+ branches & 510 external advocates',
+    audience: 'For 400+ branches & 350+ approvers',
     year: '2022',
     role: 'Sole UX designer (end-to-end IC)',
     duration: '20 days',
@@ -16,6 +16,8 @@ const PROJECTS = [
     tags: ['Legal-tech', 'B2B', 'Vendor ecosystem'],
     figma: '',
     thumbLabel: 'Legal verification',
+    thumbImage: 'uploads/legal-verification-card-840.webp',
+    thumbAlt: 'Legal scrutiny report displayed on a laptop in an office',
     summary: 'A clearer way for external advocates to complete legal reports and for branch teams to review them.',
   },
   {
@@ -24,7 +26,7 @@ const PROJECTS = [
     extended: true,
     title: 'Technical verification',
     client: 'Piramal Capital',
-    audience: 'For field verifiers, vendor managers & BTMs',
+    audience: 'For 400 branches, 750+ vendors & ~1,500 verifiers',
     year: '2022',
     role: 'Solo UX designer',
     duration: '30 days',
@@ -32,6 +34,8 @@ const PROJECTS = [
     tags: ['Field ops', 'Mobile capture', 'Fintech'],
     figma: '',
     thumbLabel: 'Technical verification',
+    thumbImage: 'uploads/technical-verification-card-840.webp',
+    thumbAlt: 'Technical verification desktop report and mobile field workflow displayed together',
     summary: 'A mobile workflow for property verifiers to record site findings and submit a complete report for approval.',
   },
 ];
@@ -107,6 +111,7 @@ const ISLANDS = [
   { id: 'sec-work',   kind: 'section',   x: 1700, y: 3280, num: 'Work',  h1: 'Selected', em: 'work' },
   { id: 'proj-1',     kind: 'project',   x: 1700, y: 3480, project: PROJECTS[1], compact: true },
   { id: 'proj-2',     kind: 'project',   x: 2160, y: 3480, project: PROJECTS[0], compact: true },
+  { id: 'work-invite',kind: 'workInvite',x: 1700, y: 4120 },
 
   // ── Experience cluster — left side (snap ~y:6060) ────────────────────────
   { id: 'sec-exp',    kind: 'section',   x: 200,  y: 5660, num: 'Experience', h1: 'Where I have', em: 'worked' },
