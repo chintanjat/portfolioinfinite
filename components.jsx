@@ -452,6 +452,7 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
 
   const sections = React.useMemo(() => [
     { key:'hero',    label:'Overview' },
+    { key:'context', label:'Context' },
     { key:'brief',   label:'What I was asked to do' },
     { key:'phase1',  label:'Phase 1 — the workflow fix' },
     { key:'observe', label:'What I saw on the ground' },
@@ -520,17 +521,26 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 02 — The brief */}
+        {/* 02 — Context */}
         <div className="cs-section" ref={refs.current[1]}>
-          <div className="cs-num">02 · The brief</div>
+          <div className="cs-num">02 · Context</div>
+          <h2>Why legal verification <em>is required</em></h2>
+          <p>When someone applies for a home loan or a loan against property, the property is used as collateral. Before lending against it, the bank needs to confirm that its ownership is clear and that there are no legal issues attached to it.</p>
+          <p>A CPA collects the required documents and assigns the case to an external legal vendor. An advocate conducts a title search, checks the property documents for legal issues or encumbrances, and prepares a Legal Scrutiny Report. An internal Piramal approver then reviews the report and either approves it or sends it back for corrections.</p>
+          <p>Legal verification is primarily document-based, so the advocate can complete it from their office without visiting the property.</p>
+        </div>
+
+        {/* 03 — The brief */}
+        <div className="cs-section" ref={refs.current[2]}>
+          <div className="cs-num">03 · The brief</div>
           <h2>Replace Salesforce for <em>three roles</em></h2>
           <p>I joined the project in April. I was walked through the current Salesforce workflow and told to rebuild it for CPAs and Approvers, and to build something new for Verifiers, who had never been in the system at all — their entire process ran on email, WhatsApp and printed paper.</p>
           <p>The Salesforce licences renewed in August. Design had to be done in 15 days so there was time for development and UAT. Seven role workflows in that window. This story follows one of them: the Agency <strong style={{color:'var(--ink)'}}>Legal Verifier</strong> and the agency manager who signs off their reports.</p>
         </div>
 
-        {/* 03 — Phase 1 */}
-        <div className="cs-section" ref={refs.current[2]}>
-          <div className="cs-num">03 · Phase 1</div>
+        {/* 04 — Phase 1 */}
+        <div className="cs-section" ref={refs.current[3]}>
+          <div className="cs-num">04 · Phase 1</div>
           <h2>I shipped the <em>obvious fix first</em></h2>
           <p>The workflow itself was clearly broken, and I could see how without any study. So I redrew the path a case takes — where the report is written, how it gets signed, who moves it along — and handed it to the developers straight away.</p>
 
@@ -544,9 +554,9 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-big">I wasn't satisfied with this. I had solved it from a walkthrough and my own judgement, not from anything I had seen a verifier or an approver actually do.</div>
         </div>
 
-        {/* 04 — Observations + problems (merged) */}
-        <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · What I saw on the ground</div>
+        {/* 05 — Observations + problems (merged) */}
+        <div className="cs-section" ref={refs.current[4]}>
+          <div className="cs-num">05 · What I saw on the ground</div>
           <h2>Watching the work changed <em>the problem</em></h2>
           <p>Phase 1 was built from a walkthrough. Before Phase 2 I went and watched the work itself: I sat with national legal heads and branch approvers while they read live reports and made a call, watched external verifiers fill their own Word files section by section, and pulled 15–20 real reports from different vendors to read side by side.</p>
           <p>What I found on the ground wasn't the problem I'd been handed. The brief was "rebuild the workflow." The work pointed somewhere else entirely — at the report itself, and how much of it was people re-doing work that had already been done.</p>
@@ -580,9 +590,9 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <div className="cs-big">Three of those four had the same answer: one standard report format, with everything already known filled in. So I chose to templatize the report — and that became Phase 2.</div>
         </div>
 
-        {/* 05 — Phase 2 */}
-        <div className="cs-section" ref={refs.current[4]}>
-          <div className="cs-num">05 · Phase 2</div>
+        {/* 06 — Phase 2 */}
+        <div className="cs-section" ref={refs.current[5]}>
+          <div className="cs-num">06 · Phase 2</div>
           <h2>One format, <em>a third of the typing</em></h2>
 
           <div className="cs-subhead">Fixed the order of the sections</div>
@@ -598,17 +608,17 @@ const ExtendedCaseStudy = ({ project, onClose, onNext }) => {
           <img src="uploads/conclusion compressed.jpg" width="1148" height="646" alt="Part 11 Conclusion — the approver's key questions answered upfront" loading="lazy" decoding="async" style={{width:'100%',height:'auto',display:'block',borderRadius:14,marginTop:8}}/>
         </div>
 
-        {/* 06 — Alignment */}
-        <div className="cs-section" ref={refs.current[5]}>
-          <div className="cs-num">06 · Alignment</div>
+        {/* 07 — Alignment */}
+        <div className="cs-section" ref={refs.current[6]}>
+          <div className="cs-num">07 · Alignment</div>
           <h2>Getting everyone <em>on board</em></h2>
           <p>Fixing the format meant telling 510 vendors their report was changing. I put the two problems to the stakeholders first: your approvers can't build a habit because every report is ordered differently, and your verifiers spend so long typing that it pushes the case TAT out.</p>
           <p>Then the trade. Yes, the order is fixed now, but the typing drops by about 70% — because everything the CPA enters is carried forward. I walked the national legal manager, the branch legal manager and a verifier through the whole flow in Figma.</p>
         </div>
 
-        {/* 07 — Impact */}
-        <div className="cs-section" ref={refs.current[6]}>
-          <div className="cs-num">07 · Impact</div>
+        {/* 08 — Impact */}
+        <div className="cs-section" ref={refs.current[7]}>
+          <div className="cs-num">08 · Impact</div>
           <h2><em>Impact</em></h2>
           <div className="cs-outcomes" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
             <div className="cs-outcome"><div className="big"><em>3d → 2h</em></div><div className="lab">Report turnaround (p75)</div></div>
@@ -645,6 +655,7 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
 
   const sections = React.useMemo(() => [
     { key:'hero',    label:'Overview' },
+    { key:'context', label:'Context' },
     { key:'before',  label:'The before' },
     { key:'reframe', label:'The existing process' },
     { key:'moves',   label:'Seven changes' },
@@ -705,9 +716,18 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           <p className="cs-lede">I redesigned how property verifiers record findings on site, submit reports for review and pass approved information to the credit team.</p>
         </div>
 
-        {/* 02 — The before */}
+        {/* 02 — Context */}
         <div className="cs-section" ref={refs.current[1]}>
-          <div className="cs-num">02 · The before</div>
+          <div className="cs-num">02 · Context</div>
+          <h2>Why technical verification <em>is required</em></h2>
+          <p>When a property is offered as collateral, the bank also needs to understand its current condition and market value. This helps determine whether the property adequately supports the requested loan amount.</p>
+          <p>A CPA collects the required documents and assigns the case to an external technical vendor. The technical verifier visits the property and assesses its construction, condition, surroundings, local market rates and other factors that affect its value. Based on this inspection, the verifier prepares a technical report with an estimated property value.</p>
+          <p>An internal Piramal approver reviews the report and either approves it or sends it back to the verifier for corrections. Unlike legal verification, technical verification requires an on-site property visit.</p>
+        </div>
+
+        {/* 03 — The before */}
+        <div className="cs-section" ref={refs.current[2]}>
+          <div className="cs-num">03 · The before</div>
           <h2>A spreadsheet supported <em>the whole process</em></h2>
           <div className="tv-before-grid">
             <div className="tv-before-copy">
@@ -728,9 +748,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 03 — The problems in the existing SFDC flow */}
-        <div className="cs-section" ref={refs.current[2]}>
-          <div className="cs-num">03 · The existing process</div>
+        {/* 04 — The problems in the existing SFDC flow */}
+        <div className="cs-section" ref={refs.current[3]}>
+          <div className="cs-num">04 · The existing process</div>
           <h2>Where the process <em>broke down</em></h2>
           <p>I mapped the full Salesforce process to understand where information changed hands, where work was repeated and where report quality was checked.</p>
           <div className="tv-panel" style={{marginTop:32}}>
@@ -744,9 +764,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 04 — Seven changes */}
-        <div className="cs-section" ref={refs.current[3]}>
-          <div className="cs-num">04 · The redesign</div>
+        {/* 05 — Seven changes */}
+        <div className="cs-section" ref={refs.current[4]}>
+          <div className="cs-num">05 · The redesign</div>
           <h2>Seven changes across <em>one workflow</em></h2>
           <p>The redesign follows the order of a case, from assignment to final approval.</p>
           <ol className="tv-route" aria-label="Redesigned technical verification workflow">
@@ -763,9 +783,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 05 — On-site capture */}
-        <div className="cs-section" ref={refs.current[4]}>
-          <div className="cs-num">05 · On-site capture</div>
+        {/* 06 — On-site capture */}
+        <div className="cs-section" ref={refs.current[5]}>
+          <div className="cs-num">06 · On-site capture</div>
           <h2>Record findings <em>during the property visit</em></h2>
           <p>The mobile workflow keeps the report's familiar sections, but replaces spreadsheet cells with structured fields. Verifiers can enter details, location and photos while they are at the property.</p>
 
@@ -801,9 +821,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 06 — Prioritisation and review */}
-        <div className="cs-section" ref={refs.current[5]}>
-          <div className="cs-num">06 · Prioritisation and review</div>
+        {/* 07 — Prioritisation and review */}
+        <div className="cs-section" ref={refs.current[6]}>
+          <div className="cs-num">07 · Prioritisation and review</div>
           <h2>Help teams decide <em>what needs attention</em></h2>
 
           <div className="cs-subhead">Case prioritisation</div>
@@ -829,9 +849,9 @@ const TechCaseStudy = ({ project, onClose, onNext }) => {
           </div>
         </div>
 
-        {/* 07 — Before → after & impact */}
-        <div className="cs-section" ref={refs.current[6]}>
-          <div className="cs-num">07 · Before and after</div>
+        {/* 08 — Before → after & impact */}
+        <div className="cs-section" ref={refs.current[7]}>
+          <div className="cs-num">08 · Before and after</div>
           <h2>What <em>changed</em></h2>
           <div className="table-scroll" role="region" aria-label="Technical verification before and after comparison" tabIndex="0">
             <table className="tv-table">
